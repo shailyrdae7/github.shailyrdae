@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>52+PUS-IAG_ROUTEv013 — Master Route Final</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+:root{
+  --royal:#173a8c;
+  --bg:#ffffff;
+  --lite:#dce4f7;
+  --hover:#f0f4ff;
+  --note:#7a1fa2;
+}
+
+*{box-sizing:border-box;}
+html,body{
+  margin:0;
+  background:var(--bg);
+  color:var(--royal);
+  font-family:"Segoe UI", Arial, sans-serif;
+  line-height:1.15;
+  font-size:11px; /* small fonts */
+}
+
+/* Strict Royal Blue Enforcement */
+h1,h2,h3,h4,p,span,div,th,td,a,li,b,strong{ color:var(--royal) !important; }
+
+header{
+  padding:12px 14px;
+  border-bottom:2px solid var(--royal);
+  margin-bottom:12px;
+}
+
+h1{ font-size:16px; margin:0 0 4px; font-weight:700; }
+.h3{
+  font-size:13px; margin:18px 0 6px 0;
+  border-bottom:1px solid var(--lite);
+  padding-bottom:3px;
+  font-weight:700;
+  text-transform:uppercase;
+}
+.small{ font-size:10px; opacity:.85; }
+
+.note{
+  font-size:10px;
+  line-height:1.25;
+  border-left:3px solid var(--royal);
+  padding:6px 10px;
+  max-width:980px;
+  margin:0 auto 14px auto;
+}
+
+/* Purple notes visually forced to royal blue to maintain strict rules */
+.note .p{ color:var(--royal) !important; font-size:10px; }
+.purple{ color:var(--royal) !important; font-size:10px; }
+
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  margin-bottom:20px;
+  border-bottom:1px solid var(--lite);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:auto; /* shrink-to-fit columns */
+  min-width:1200px;
+}
+
+th,td{
+  padding:4px 5px;
+  border-bottom:1px solid #eef2fa;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  vertical-align:middle;
+  text-align:left;
+}
+
+thead th{
+  background:var(--hover);
+  position:sticky;
+  top:0;
+  z-index:2;
+  font-weight:700;
+  border-bottom:1px solid var(--royal);
+  font-size:10px;
+  text-transform:uppercase;
+}
+
+td a{
+  text-decoration:none;
+  font-weight:700;
+  border-bottom:1px dotted var(--royal);
+}
+td a:hover{ border-bottom:1px solid var(--royal); background:var(--hover); }
+
+th.num, td.num{ text-align:right; font-family:Consolas, monospace; }
+th.center, td.center{ text-align:center; }
+
+/* highlights */
+.new-link{ background:#eef9ee; font-weight:bold; }
+.swapped-row{ background:#fff8e1; font-weight:bold; }
+.palace-row{ background:#fff0f5; font-weight:bold; }
+.final-row{ background:#f0f8ff; font-weight:bold; border-top:1px solid var(--royal); }
+
+/* Map */
+#map-container{
+  height:550px;
+  width:100%;
+  margin:20px 0;
+  border-top:2px solid var(--royal);
+  border-bottom:2px solid var(--royal);
+  position:relative;
+}
+#map{ width:100%; height:100%; }
+
+/* Map buttons */
+.leaflet-control-toggle{
+  background:white;
+  padding:6px 10px;
+  border:2px solid var(--royal);
+  border-radius:4px;
+  cursor:pointer;
+  font-weight:bold;
+  color:var(--royal);
+  font-size:11px;
+  box-shadow:0 2px 5px rgba(0,0,0,.2);
+}
+.leaflet-control-toggle:hover{
+  background:var(--royal);
+  color:#ffffff !important;
+}
+
+/* markers */
+.pill-icon{
+  background:var(--royal);
+  color:#fff !important;
+  border-radius:12px;
+  padding:0 6px;
+  white-space:nowrap;
+  text-align:center;
+  font-size:10px;
+  line-height:20px;
+  border:2px solid #fff;
+  box-shadow:0 2px 4px rgba(0,0,0,.3);
+  width:auto !important;
+}
+.dot-icon{
+  background:var(--royal);
+  color:#fff !important;
+  border-radius:50%;
+  width:20px !important;
+  height:20px !important;
+  text-align:center;
+  line-height:20px;
+  font-size:10px;
+  border:2px solid #fff;
+  box-shadow:0 2px 4px rgba(0,0,0,.3);
+}
+.pill-icon *, .dot-icon *{ color:#ffffff !important; }
+
+.ai-button{
+  background:#fff;
+  border:1px solid var(--royal);
+  border-radius:4px;
+  padding:1px 4px;
+  cursor:pointer;
+  font-size:9px;
+  width:100%;
+  text-transform:uppercase;
+  font-weight:bold;
+}
+.ai-button:hover{ background:var(--royal); color:#fff !important; }
+</style>
+</head>
+
+<body>
+<header>
+  <h1>52+PUS-IAG_ROUTEv013 — Master 52 (Provider: OSM / ESRI) — Final Map & Route Only</h1>
+  <div class="small">Royal Blue • 52 Stops • Asia Sequence Fixed • Remaining Route Re-optimized by Great-Circle Distance • Provider: OSM / ESRI</div>
+</header>
+
+<section>
+  <h3 class="h3">Table-A • Master Route (N=52) <button id="toggleSortA" class="ai-button" style="max-width:170px;margin-left:8px;">Sort: ROUTE</button></h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="center">SN</th>
+          <th class="center">No Of Regions</th>
+          <th>Country</th>
+          <th>Cap. City</th>
+          <th>City</th>
+          <th class="center">IATA / ICAO</th>
+          <th>Airport Name</th>
+          <th class="center">Runways</th>
+          <th class="center">BEARINGS</th>
+          <th class="num">ELEV</th>
+          <th class="center">QNH</th>
+          <th class="center">ARP (Lat°, Lon°)</th>
+          <th class="num">NEXT km</th>
+          <th>Arr / Journey</th>
+        </tr>
+      </thead>
+      <tbody id="table-a-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<div id="map-container"><div id="map"></div></div>
+
+<div class="note" id="region-summary" style="max-width:980px;margin:12px auto 14px auto;">
+  <div class="p"><b>REGION SUMMARY</b></div>
+  <div class="purple" id="region-summary-body">Calculating...</div>
+</div>
+
+<div class="note" id="precision-audit" style="max-width:980px;margin:12px auto 14px auto;">
+  <div class="p"><b>APR / QNH PRECISION AUDIT</b></div>
+  <div class="purple" id="precision-audit-body">Calculating...</div>
+</div>
+
+<script>
+(function(){
+  try{
+    setTimeout(()=>{
+      const rows = window.__routeRows || [];
+      const counts = {};
+      rows.forEach(r=>{
+        const k = (r.region||"BLANK").split("-")[0] || "BLANK";
+        counts[k] = (counts[k]||0)+1;
+      });
+      const order = ["ASIA","ME","EU","NONEU","AFRICA","AMERICAS","BLANK","UNKNOWN"];
+      let total = 0;
+      let txt = order.map(k=>{
+        const n = counts[k]||0;
+        total += n;
+        return `${k}: ${n}`;
+      }).join("  |  ");
+      const el = document.getElementById("region-summary-body");
+      if(el) el.innerHTML = txt + `  |  <b>TOTAL = ${total}</b>`;
+      const unknowns = rows.filter(r => (r.region||"").startsWith("UNKNOWN"));
+      if(unknowns.length){
+        const warn = document.createElement("div");
+        warn.className = "purple";
+        warn.style.marginTop = "6px";
+        warn.innerHTML = "<b>UNKNOWN detected:</b> " + unknowns.map(u=>u.country).join(", ");
+        document.getElementById("region-summary").appendChild(warn);
+      }
+    
+      // === Precision Audit (ARP + QNH) ===
+      try{
+        const missARP = rows.filter(r => !(r.lat!=null && r.lon!=null && r.lat!=="" && r.lon!=="" && isFinite(Number(r.lat)) && isFinite(Number(r.lon))));
+        const missQNH = rows.filter(r => !(r.qnh && String(r.qnh).trim().length));
+        const missRwy = rows.filter(r => !(r.rwy && String(r.rwy).trim().length) || (String(r.brg||"").trim()==="00/00"));
+        const top = (arr) => arr.slice(0, 24).map(r => `<b>${r.sn}.</b> ${r.code} (${r.city||""})`).join(" • ");
+        const el2 = document.getElementById("precision-audit-body");
+        if(el2){
+          el2.innerHTML =
+            `<b>Missing ARP:</b> ${missARP.length}  |  <b>Missing QNH:</b> ${missQNH.length}  |  <b>Runway/Bearing blanks:</b> ${missRwy.length}` +
+            (missARP.length ? `<br><span style="font-size:10px"><b>ARP:</b> ${top(missARP)}</span>` : "") +
+            (missQNH.length ? `<br><span style="font-size:10px"><b>QNH:</b> ${top(missQNH)}</span>` : "") +
+            (missRwy.length ? `<br><span style="font-size:10px"><b>RWY/BRG:</b> ${top(missRwy)}</span>` : "");
+        }
+      }catch(e){}
+
+    }, 900);
+  }catch(e){}
+})();
+</script>
+
+<script>
+/* =========================================================
+   DATA (Master Route ONLY)
+   ========================================================= */
+
+const routeData = [
+  {ref:1,   city:"Busan",        country:"S. Korea",      code:"PUS", name:"Gimhae Intl", link:"https://www.airport.co.kr/gimhae/index.do", lat:35.1796, lon:128.9388, elev:10,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:304, city:"Beijing", country:"China", code:"PEK", name:"Beijing Capital International Airport", link:"https://ourairports.com/airports/ZBAA/", lat:40.0801, lon:116.5850, elev:116, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:2, city:"Ulaanbaatar", country:"Mongolia", code:"UBN", name:"Chinggis Khaan International Airport", link:"https://en.ulaanbaatar-airport.mn/", lat:47.646916, lon:106.819833, elev:4485, icao:"ZMCK" },
+  {ref:302, city:"Macau", country:"Macau", code:"MFM", name:"Macau International Airport", link:"https://ourairports.com/airports/VMMC/", lat:22.149599, lon:113.592003, elev:20, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:303, city:"Kaohsiung", country:"Taiwan", code:"KHH", name:"Kaohsiung International Airport", link:"https://ourairports.com/airports/RCKH/", lat:22.577101, lon:120.349998, elev:31, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:116, city:"Manila",        country:"Philippines",   code:"MNL", name:"Manila Intl", link:"https://caap.gov.ph/",                        lat:14.508600, lon:121.019997, elev:75,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:19,  city:"Melbourne",    country:"Australia",     code:"MEL", name:"Tullamarine", link:"https://www.melbourneairport.com.au/",      lat:-37.6733, lon:144.8433, elev:434,  qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:20,  city:"Yogyakarta",   country:"Indonesia",     code:"YIA", name:"Yogyakarta Intl", link:"https://yogyakarta-airport.co.id/en",    lat:-7.9022, lon:110.0575, elev:18,    qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:12,  city:"Singapore",    country:"Singapore",     code:"SIN", name:"Changi Intl", link:"https://www.changiairport.com/",             lat: 1.3644,  lon: 103.9915, elev: 22,    qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:11,  city:"Kuching",      country:"Malaysia",      code:"KCH", name:"Kuching International", link:"https://airports.malaysiaairports.com.my/kuching", lat:1.4847, lon:110.3469, elev:89, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:311, city:"Bandar Seri Begawan", country:"Brunei", code:"BWN", name:"Brunei International Airport", link:"https://ourairports.com/airports/WBSB/", lat:4.9442, lon:114.928001, elev:73, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:307, city:"Sihanoukville", country:"Cambodia", code:"KOS", name:"Sihanouk International Airport", link:"https://ourairports.com/airports/VDSV/", lat:10.570557, lon:103.632067, elev:33, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:10,  city:"Da Lat",       country:"Vietnam",       code:"DLI", name:"Lien Khuong Intl", link:"https://ourairports.com/airports/VVDL/", rwy:"09/27", brg:"090/270", lat:11.75056, lon:108.37361, elev:3156, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:301, city:"Vientiane", country:"Laos", code:"VTE", name:"Wattay International Airport", link:"https://ourairports.com/airports/VLVT/", lat:17.985052, lon:102.566692, elev:564, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:8,   city:"Chiang Mai",   country:"Thailand",      code:"CNX", name:"Chiang Mai Intl", link:"https://chiangmai.airportthai.co.th/",   lat:18.7668, lon:98.9626, elev:1036, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:38,  city:"Al Ain",       country:"U.A.E.",        code:"AAN", name:"Al Ain Intl", link:"https://www.adairports.ae/english/airports/al-ain-international-airport", lat:24.2617, lon:55.6092, elev:866, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:37,  city:"Al Udeid",     country:"Qatar",        code:"OTBH", name:"Al Udeid Air Base", link:"https://ourairports.com/airports/OTBH/", lat:25.1173, lon:51.3150, elev:130, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:312, city:"Mahshahr", country:"Iran", code:"MRX", name:"Mahshahr Airport", link:"https://ourairports.com/airports/OIAM/", rwy:"14/32", brg:"140/320", lat:30.556200, lon:49.151901, elev:2, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:305, city:"Kuwait City", country:"Kuwait", code:"KWI", name:"Kuwait International Airport", link:"https://ourairports.com/airports/OKKK/", lat:29.224487, lon:47.969813, elev:206, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:35,  city:"Medina",      country:"Saudi Arabia",  code:"MED", name:"Prince Mohammad bin Abdulaziz Intl", link:"http://www.tibahairports.com",  rwy:"17/35, 18/36", brg:"170/350, 180/360", lat:24.5534, lon:39.7051, elev:2151,  qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:42,  city:"Aswan",        country:"Egypt",         code:"ASW", name:"Aswan Intl", link:"http://www.eac-airports.com/",                 lat:23.9644, lon:32.8197, elev:662,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:115, city:"Beersheba",    country:"Israel",        code:"LLHB", name:"Hatzerim Air Base", link:"https://www.gov.il/BlobFolder/guide/aip/he/TRANSPORT%203.pdf", rwy:"10L/28R, 10R/28L, 15/33", brg:"102/282, 102/282, 143/323", lat:31.243333, lon:34.655000, elev:738, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:46,  city:"Deir ez-Zor",  country:"Syria",         code:"DEZ", name:"Deir ez-Zor", link:"http://www.scca.sy/",                        lat:35.2917, lon:40.1794, elev:700,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:306, city:"Batumi",       country:"Georgia",       code:"BUS", name:"Batumi Intl (Alexander Kartveli)", link:"https://www.batumiairport.com/", rwy:"12/30", brg:"120/300", lat:41.61028, lon:41.59944, elev:37, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:47,  city:"Geçitkale",   country:"Cyprus",        code:"GEC", name:"Lefkoniko Airport / Geçitkale Air Base", link:"https://ourairports.com/airports/LCGK/", rwy:"09/27", brg:"090/270", lat:35.235910, lon:33.720088, elev:146, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:48,  city:"Antalya",      country:"Türkiye",       code:"AYT", name:"Antalya", link:"https://www.antalya-airport.aero/",              lat:36.8987, lon:30.8005, elev:177,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:116, city:"Athens",      country:"Greece",        code:"ATH", name:"Athens Intl (Eleftherios Venizelos)", link:"https://www.aia.gr/", lat:37.9364, lon:23.9445, elev:308,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:51,  city:"Vlorë",        country:"Albania",      code:"VLO", name:"Vlora International Airport", link:"https://vlora-airport.com/", rwy:"12/30", brg:"120/300", lat:40.6054, lon:19.4261, elev:8, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:50,  city:"Skopje",       country:"N. Macedonia",  code:"SKP", name:"Skopje International Airport", link:"http://skp.airports.com.mk/",                lat:41.9616, lon:21.6214, elev:781,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:308, city:"Sarajevo", country:"Bosnia and Herzegovina", code:"SJJ", name:"Sarajevo International Airport", link:"https://ourairports.com/airports/LQSA/", lat:43.8246, lon:18.331499, elev:1708, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:73,  city:"Bratislava",  country:"Slovakia",      code:"BTS", name:"M. R. Štefánik Airport", link:"https://www.bts.aero/en/",          lat:48.1702, lon:17.2127, elev:436,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:64,  city:"Rzeszów",      country:"Poland",        code:"RZE", name:"Jasionka", link:"https://rzeszowairport.pl/en",                  lat:50.1100, lon:22.0189, elev:693,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:309, city:"Chișinău", country:"Moldova", code:"RMO", name:"Chișinău International Airport", link:"https://airport.md/", lat:46.92774, lon:28.931704, elev:399, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:58,  city:"Kyiv",         country:"Ukraine",       code:"KBP", name:"Boryspil", link:"https://kbp.aero/en/",                          lat:50.3447, lon:30.8933, elev:427,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:60,  city:"Helsinki",     country:"Finland",       code:"HEL", name:"Vantaa", link:"https://www.finavia.fi/en/airports/helsinki-airport", lat:60.3184, lon:24.9633, elev:179, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:313, city:"Västerås", country:"Sweden", code:"VST", name:"Stockholm Västerås Airport", link:"https://vasterasairport.se/", lat:59.589401, lon:16.633600, elev:21, icao:"ESOW" },
+  {ref:314, city:"Stavanger", country:"Norway", code:"SVG", name:"Stavanger Airport, Sola", link:"https://www.avinor.no/en/airport/stavanger/", lat:58.876701, lon:5.637780, elev:29, icao:"ENZV" },
+  {ref:315, city:"Ostend", country:"Belgium", code:"OST", name:"Ostend-Bruges International Airport", link:"https://www.ostendbruges-airport.com/", lat:51.199800, lon:2.874673, elev:13, icao:"EBOS" },
+  {ref:83,  city:"Basel",       country:"Switzerland",   code:"BSL", name:"EuroAirport Basel–Mulhouse–Freiburg", link:"https://www.euroairport.com/en/",                     lat:47.5896, lon:7.5299, elev:885,  qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:72,  city:"Decimomannu", country:"Italy",         code:"LIED", name:"Decimomannu Air Base", link:"https://en.wikipedia.org/wiki/Decimomannu_Air_Base",    lat:39.3542, lon:8.9722, elev:100,   qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:316, city:"Beja", country:"Portugal", code:"BYJ", icao:"LPBJ", name:"Beja Airport", link:"https://ais.nav.pt/wp-content/uploads/AIS_Files/eAIP_Current/eAIP_Online/eAIP/html/eAIP/LP-AD-2.LPBJ-en-PT.html", rwy:"01L/19R", brg:"006/186", lat:38.078889, lon:-7.932500, elev:636, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:117, city:"Aracaju",     country:"Brazil",        code:"AJU", name:"Santa Maria Airport", link:"https://ourairports.com/airports/SBAR/", lat:-10.9840, lon:-37.0703, elev:23, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:99,  city:"Ushuaia",      country:"Argentina",     code:"USH", name:"Malvinas", link:"https://www.aeropuertoushuaia.com/",            lat:-54.8433, lon:-68.2958, elev:102, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:98,  city:"Antofagasta",     country:"Chile",         code:"ANF", icao:"SCFA", name:"Andrés Sabella Airport", link:"https://aipchile.dgac.gob.cl/designador/SCFA", rwy:"01/19", brg:"011/191", lat:-23.4444, lon:-70.4450, elev:455, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:96, city:"La Joya", country:"Peru", code:"SPLC", name:"Mariano Melgar Airport / La Joya Air Base", link:"https://eaip-peru.corpac.gob.pe/", rwy:"17/35", brg:"170/350", lat:-16.7915, lon:-71.8866, elev:3890, icao:"SPLC" },
+  {ref:95,  city:"Quito", country:"Ecuador", code:"UIO", name:"Mariscal Sucre International Airport", link:"https://ourairports.com/airports/SEQM/", rwy:"18/36", brg:"180/360", lat:-0.129166, lon:-78.3575, elev:7841, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:93,  city:"Maracaibo",     country:"Venezuela",     code:"MAR", name:"La Chinita International Airport", link:"https://ourairports.com/airports/SVMC/", lat:10.5582, lon:-71.7279, elev:72, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:310, city:"San Salvador", country:"El Salvador", code:"SAL", name:"Monseñor Óscar Arnulfo Romero International Airport", link:"https://ourairports.com/airports/MSLP/", lat:13.44447, lon:-89.055753, elev:101, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:87,  city:"Cancún",       country:"Mexico",        code:"CUN", name:"Cancún International Airport", link:"https://ourairports.com/airports/MMUN/", lat:21.0394, lon:-86.8743, elev:22, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:86,  city:"Ontario",      country:"USA",           code:"ONT", name:"Ontario Intl", link:"https://www.flyontario.com/",               lat:34.0560, lon:-117.6010, elev:944, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:113, city:"Wash. DC",     country:"USA",           code:"ADW", name:"Joint Base Andrews", link:"https://ourairports.com/airports/KADW/", lat:38.8108, lon:-76.8670, elev:280, qnh:"1013.25 hPa / 29.92 inHg" },
+  {ref:118, city:"Niagara",      country:"USA",           code:"IAG", name:"Niagara Intl", link:"https://www.niagarafallsairport.com/", lat:43.1070, lon:-78.9460, elev:592, qnh:"1013.25 hPa / 29.92 inHg" }
+];
+
+// --- Data hygiene patch (v142): force correct SKP naming (no 'Skopje' / typos) ---
+try {
+  if (Array.isArray(routeData)) {
+    routeData.forEach(a => {
+      if (a && String(a.code).toUpperCase() === "SKP") {
+        a.city = "Skopje";
+        a.name = "Skopje International Airport";
+      }
+      // Normalize any legacy typo 'Skopje' (only relevant to SKP)
+      if (a && typeof a.city === "string" && a.city.toLowerCase().includes("Skopje")) {
+        if (String(a.code).toUpperCase() === "SKP") a.city = "Skopje";
+      }
+    });
+  }
+} catch (e) {}
+
+/* =========================================================
+   OurAirports AutoFill Engine
+   ========================================================= */
+
+function parseCSVLine(line){
+  const out=[]; let cur=""; let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch === '"'){
+      if(inQ && line[i+1] === '"'){ cur+='"'; i++; }
+      else inQ=!inQ;
+    } else if(ch === ',' && !inQ){
+      out.push(cur); cur="";
+    } else cur+=ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+function makeRwyStr(rwys){
+  if(!rwys || !rwys.length) return "";
+  const uniq=[]; const seen=new Set();
+  rwys.forEach(r=>{
+    const id = (r.le+"/"+r.he).replace(/\s+/g,'');
+    if(!seen.has(id)){ seen.add(id); uniq.push(r); }
+  });
+  return uniq.map(r=>{
+    const tag = (r.closed === "1") ? " (closed)" : "";
+    return `${r.le}/${r.he}${tag}`;
+  }).join(", ");
+}
+
+function rwyIdToDeg(id){
+  if(!id) return "";
+  // Extract runway number (e.g., 12L -> 12, 5 -> 5, 36 -> 36)
+  const m = String(id).trim().match(/^0*([0-9]{1,2})/);
+  if(!m) return "";
+  const n = Number(m[1]);
+  if(!isFinite(n)) return "";
+  if(n === 0) return "000";
+  const deg = (n === 36) ? 360 : n * 10;
+  return String(Math.round(deg)).padStart(3,'0');
+}
+
+function deriveBrgFromRwyStr(rwyStr){
+  if(!rwyStr) return "";
+  const pairs = String(rwyStr).split(",").map(s=>s.trim()).filter(Boolean);
+  const out = [];
+  pairs.forEach(p=>{
+    const parts = p.split("/").map(s=>s.trim());
+    if(parts.length >= 2){
+      const le = rwyIdToDeg(parts[0]);
+      const he = rwyIdToDeg(parts[1]);
+      if(le && he) out.push(`${le}/${he}`);
+    }
+  });
+  return Array.from(new Set(out)).join(", ");
+}
+
+function makeBrgStr(rwys){
+  if(!rwys || !rwys.length) return "";
+  const parts=[];
+  rwys.forEach(r=>{
+    const le = r.le_hdg ? String(Math.round(Number(r.le_hdg))).padStart(3,'0') : rwyIdToDeg(r.le);
+    const he = r.he_hdg ? String(Math.round(Number(r.he_hdg))).padStart(3,'0') : rwyIdToDeg(r.he);
+    if(le && he) parts.push(`${le}/${he}`);
+  });
+  return Array.from(new Set(parts)).join(", ");
+}
+
+let OA_CACHE = null;
+
+async function loadOurAirports(){
+  if(OA_CACHE) return OA_CACHE;
+
+  const urls = {
+    airports:"https://davidmegginson.github.io/ourairports-data/airports.csv",
+    countries:"https://davidmegginson.github.io/ourairports-data/countries.csv",
+    runways:"https://davidmegginson.github.io/ourairports-data/runways.csv"
+  };
+
+  const [countriesTxt, airportsTxt, runwaysTxt] = await Promise.all([
+    fetch(urls.countries).then(r=>r.text()),
+    fetch(urls.airports).then(r=>r.text()),
+    fetch(urls.runways).then(r=>r.text())
+  ]);
+
+  // Countries ISO -> name
+  const cLines = countriesTxt.split(/\r?\n/);
+  const cHead = parseCSVLine(cLines[0]);
+  const idxCCode = cHead.indexOf("code");
+  const idxCName = cHead.indexOf("name");
+  const isoToName = {};
+  for(let i=1;i<cLines.length;i++){
+    const ln=cLines[i]; if(!ln) continue;
+    const row=parseCSVLine(ln);
+    isoToName[row[idxCCode]] = row[idxCName];
+  }
+
+  // Airports
+  const aLines = airportsTxt.split(/\r?\n/);
+  const aHead = parseCSVLine(aLines[0]);
+
+  const idxAId    = aHead.indexOf("id");
+  const idxAIdent = aHead.indexOf("ident");
+  const idxAName  = aHead.indexOf("name");
+  const idxALat   = aHead.indexOf("latitude_deg");
+  const idxALon   = aHead.indexOf("longitude_deg");
+  const idxAElev  = aHead.indexOf("elevation_ft");
+  const idxAIso   = aHead.indexOf("iso_country");
+  const idxAMuni  = aHead.indexOf("municipality");
+  const idxAIata  = aHead.indexOf("iata_code");
+
+  const byIata = {};      // IATA -> airport
+  const byIdent = {};     // ICAO/GPS ident -> airport
+  const byAirportId = {}; // airport_id -> airport (for runways join)
+
+  for(let i=1;i<aLines.length;i++){
+    const ln=aLines[i]; if(!ln) continue;
+    const row=parseCSVLine(ln);
+
+    const id = row[idxAId] || "";
+    const ident = row[idxAIdent] || "";
+    const iata = row[idxAIata] || "";
+    const iso = row[idxAIso] || "";
+    const ap = {
+      airport_id:id,
+      ident: ident,
+      iata: iata,
+      airport: row[idxAName] || "",
+      city: row[idxAMuni] || "",
+      country: isoToName[iso] || iso || "",
+      lat: row[idxALat] || "",
+      lon: row[idxALon] || "",
+      elev: row[idxAElev] || ""
+    };
+    if(iata) byIata[iata] = ap;
+    if(ident) byIdent[ident] = ap;
+    if(id) byAirportId[id] = ap;
+  }
+
+  // Runways
+  const rLines = runwaysTxt.split(/\r?\n/);
+  const rHead = parseCSVLine(rLines[0]);
+
+  const idxRRef   = rHead.indexOf("airport_ref");
+  const idxRLe    = rHead.indexOf("le_ident");
+  const idxRHe    = rHead.indexOf("he_ident");
+  const idxRLeH   = rHead.indexOf("le_heading_degT");
+  const idxRHeH   = rHead.indexOf("he_heading_degT");
+  const idxRClosed= rHead.indexOf("closed");
+
+  const rwysByAirportId = {}; // airport_id -> runway array
+  for(let i=1;i<rLines.length;i++){
+    const ln=rLines[i]; if(!ln) continue;
+    const row=parseCSVLine(ln);
+    const ref=row[idxRRef]; if(!ref) continue;
+    const rwy={
+      le: row[idxRLe] || "",
+      he: row[idxRHe] || "",
+      le_hdg: row[idxRLeH] || "",
+      he_hdg: row[idxRHeH] || "",
+      closed: row[idxRClosed] || ""
+    };
+    if(!rwy.le || !rwy.he) continue;
+    if(!rwysByAirportId[ref]) rwysByAirportId[ref]=[];
+    rwysByAirportId[ref].push(rwy);
+  }
+
+  OA_CACHE = { byIata, byIdent, rwysByAirportId };
+  return OA_CACHE;
+}
+
+/* Manual ICAO fallback for oddballs / nonstandard IATA */
+const ICAO_FALLBACK = {
+  "MED":"OEMA",  /* Prince Mohammad bin Abdulaziz International Airport */
+  "UBN":"ZMCK",  /* Chinggis Khaan International Airport */
+  "SPLC":"SPLC", /* Mariano Melgar Airport / La Joya */
+  "RMO":"LUKK" /* Chişinău International Airport */
+};
+
+// IATA aliases (legacy/alternate codes -> current OurAirports IATA)
+const IATA_ALIAS = {
+  "FRU":"BSZ", // Manas Intl (Bishkek)
+  
+};
+
+function enrichRoutePoint(p, oa){
+let ap = null;
+  if(p.code && p.code.length === 3){
+    const key = (IATA_ALIAS[p.code] || p.code);
+    ap = oa.byIata[key] || null;
+  }
+  if(!ap && p.code && p.code.length === 4) ap = oa.byIdent[p.code] || null;
+
+  
+  // if IATA lookup failed but we have an ICAO fallback, try ident lookup
+  if(!ap && ICAO_FALLBACK[p.code]) ap = oa.byIdent[ICAO_FALLBACK[p.code]] || null;
+// ICAO / Ident
+  p.icao = (ap && ap.ident) ? ap.ident : (ICAO_FALLBACK[p.code] || p.icao || "");
+
+  // prefer authoritative fields if present (but don't erase user's custom names unless clearly wrong)
+  if(ap){
+    // Force country names from OurAirports to match REGION_SETS exactly
+    const COUNTRY_OVERRIDE = {
+      "BSL": "Switzerland",
+      "PUS": "S. Korea",
+      "SEL": "S. Korea",
+      "ICN": "S. Korea",
+      "AAN": "U.A.E.",
+      "AUH": "U.A.E.",
+      "DXB": "U.A.E.",
+      "SHJ": "U.A.E.",
+      "IAG": "USA",
+      "ONT": "USA",
+      "ADW": "USA",
+      "JFK": "USA",
+      "SKP": "N. Macedonia",
+      "AYT": "Türkiye",
+      "IST": "Türkiye"
+    };
+
+    // First check if country needs override by airport code
+    if (COUNTRY_OVERRIDE[p.code]) {
+       p.country = COUNTRY_OVERRIDE[p.code];
+    } else {
+       // If not, check if the API returned a name we need to map globally
+       let c = ap.country || "";
+       if(c === "United States") p.country = "USA";
+       else if(c === "United Kingdom") p.country = "UK";
+       else if(c === "South Korea") p.country = "S. Korea";
+       else if(c === "United Arab Emirates") p.country = "U.A.E.";
+       else if(c === "North Macedonia") p.country = "N. Macedonia";
+       else if(c === "Turkey") p.country = "Türkiye";
+       else p.country = c;
+    }
+
+    const CITY_OVERRIDE = { "KBP":"Kyiv", "ATH":"Athens", "BSL":"Basel" };
+    if(ap.city) p.city = CITY_OVERRIDE[p.code] || ap.city;
+
+    // If name is blank or obviously placeholder, take airport name
+    const nm = (p.name || "").toLowerCase();
+    if(!p.name || nm.includes("intl") || nm.includes("air base") || nm.includes("helipad") || nm.includes("washington national") || nm.includes("buyant") || nm.includes("tullamarine") || nm.includes("malpensa") || nm.includes("el prat") || nm.includes("vantaa") ){
+      // keep existing label; still ok
+    } else {
+      // If user had a non-airport placeholder, overwrite
+      if(nm.includes("h st") || nm.includes("address")) p.name = ap.airport || p.name;
+    }
+
+    // If user label is just one word (e.g., "Tullamarine"), prefer the full legal airport name
+    if(p.name && (p.name.trim().split(/\s+/).length <= 1)){
+      p.name = ap.airport || p.name;
+    }
+    // coordinates + elev
+    if(ap.lat) p.lat = Number(ap.lat);
+    if(ap.lon) p.lon = Number(ap.lon);
+    if(ap.elev) p.elev = Number(ap.elev);
+
+    // runways/bearings from runways table
+    const rwys = oa.rwysByAirportId[ap.airport_id] || [];
+    const rwyStr = makeRwyStr(rwys);
+    const brgStr = makeBrgStr(rwys);
+    if(rwyStr) p.rwy = rwyStr;
+    if(brgStr) p.brg = brgStr;
+  }
+
+  // fallback for any still-missing runway/bearing (never leave Bearings blank)
+  p.rwy = p.rwy || "";
+  p.brg = p.brg || deriveBrgFromRwyStr(p.rwy) || "00/00";
+  return p;
+}
+
+/* =========================================================
+   Route math
+   ========================================================= */
+
+/* ===========================
+   Ground Time (per stop)
+   =========================== */
+const GROUND_TIME_MS = {
+  "LLHB": 3 * 60 * 60 * 1000, // Israel stop (Hatzerim Air Base)
+  "PUS": 0,
+  "ADW": 0,
+  "IAG": 0,
+  "MXP": 3 * 60 * 60 * 1000,
+  "MED": 3 * 60 * 60 * 1000, // Fuel stop (nearest civil fuel/ops support: OERK/RUH)
+};
+
+function formatGround(ms){
+  if(ms === 0) return "0 sec";
+  if(ms < 60000) return `${ms/1000} sec`;
+  if(ms > 3600000) return `${ms/3600000} hrs`;
+  return `${ms/60000} min`;
+}
+
+function toRad(v){ return v*Math.PI/180; }
+function calcDist(lat1, lon1, lat2, lon2){
+  const R=6371;
+  const dLat=toRad(lat2-lat1);
+  const dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);
+  const c=2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return Math.round(R*c);
+}
+
+function calcBearing(lat1, lon1, lat2, lon2){
+  // Initial bearing (degrees true), 0..360
+  const φ1 = toRad(lat1), φ2 = toRad(lat2);
+  const Δλ = toRad(lon2 - lon1);
+  const y = Math.sin(Δλ) * Math.cos(φ2);
+  const x = Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+  let θ = Math.atan2(y, x) * 180/Math.PI;
+  θ = (θ + 360) % 360;
+  return Math.round(θ);
+}
+function formatTime(d){
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const day=days[d.getDay()];
+  let h=d.getHours();
+  const m=String(d.getMinutes()).padStart(2,'0');
+  const ampm = h>=12?'PM':'AM';
+  h=h%12; h=h?h:12;
+  return `${day} ${h}:${m} ${ampm}`;
+}
+
+/* =========================================================
+   Runway Link Provider
+   ========================================================= */
+const RUNWAY_LINK_PROVIDER = "bingmaps"; // arcearth | flight24 | bingmaps
+
+function runwayProviderUrl(p){
+  try{
+    const lat = (p && p.lat!=null && p.lat!=="") ? Number(p.lat) : null;
+    const lon = (p && p.lon!=null && p.lon!=="") ? Number(p.lon) : null;
+    const code = (p && p.code) ? String(p.code).trim() : "";
+    if(RUNWAY_LINK_PROVIDER === "flight24"){
+      return code ? `https://www.flightradar24.com/airport/${code.toLowerCase()}` : "https://www.flightradar24.com/data/airports";
+    }
+    if(RUNWAY_LINK_PROVIDER === "bingmaps"){
+      if(lat!=null && lon!=null && isFinite(lat) && isFinite(lon)) return `https://www.bing.com/maps?cp=${lat.toFixed(6)}~${lon.toFixed(6)}&lvl=14`;
+      return code ? `https://www.bing.com/maps?q=${encodeURIComponent(code)}` : "https://www.bing.com/maps";
+    }
+    // default: ArcGIS (ArcEarth-style web map)
+    if(lat!=null && lon!=null && isFinite(lat) && isFinite(lon)) return `https://www.arcgis.com/apps/mapviewer/index.html?center=${lon.toFixed(6)},${lat.toFixed(6)}&level=14`;
+    return code ? `https://www.arcgis.com/apps/mapviewer/index.html?find=${encodeURIComponent(code)}` : "https://www.arcgis.com/apps/mapviewer/index.html";
+  }catch(e){
+    return "#";
+  }
+}
+
+
+/* =========================================================
+   REGION LABELS
+   ========================================================= */
+const REGION_SETS = {
+  ASIA: new Set(['Australia', 'Indonesia', 'Malaysia', 'Mongolia', 'Philippines', 'S. Korea', 'Singapore', 'Thailand', 'Vietnam', 'Nepal', 'China', 'Taiwan', 'Hong Kong', 'Macau', 'Laos', 'Cambodia', 'Brunei', 'Papua New Guinea', 'New Caledonia', 'Fiji', 'New Zealand', 'Sri Lanka', 'Maldives', 'Kazakhstan', 'Kyrgyzstan', 'Uzbekistan', 'Tajikistan', 'Turkmenistan']),
+  ME: new Set(['Egypt', 'Israel', 'Jordan', 'Qatar', 'Saudi Arabia', 'Syria', 'U.A.E.', 'Azerbaijan', 'Iran', 'Iraq', 'Bahrain', 'Oman', 'Yemen', 'Kuwait', 'Lebanon']),
+  EU: new Set(['Cyprus', 'Finland', 'Greece', 'Italy', 'Netherlands', 'Poland', 'Slovakia', 'Spain', 'Bulgaria', 'Romania', 'Estonia', 'Latvia', 'Lithuania', 'Germany', 'Czechia', 'Austria', 'Hungary', 'Croatia', 'Slovenia', 'Malta', 'Portugal']),
+  NONEU: new Set(['Albania', 'N. Macedonia', 'Switzerland', 'Türkiye', 'UK', 'Ukraine', 'Georgia', 'Armenia', 'Montenegro', 'Bosnia and Herzegovina', 'Serbia', 'Moldova', 'Belarus']),
+  AFRICA: new Set(['Mali', 'Morocco', 'Tunisia', 'Libya', 'Algeria', ]),
+  AMERICAS: new Set(['Argentina', 'Brazil', 'Chile', 'Ecuador', 'Mexico', 'Peru', 'USA', 'Venezuela', 'El Salvador', 'Costa Rica', 'Panama', 'Suriname', 'Guyana', 'Grenada', 'Barbados', 'St. Lucia', 'Antigua and Barbuda', 'Puerto Rico', 'Jamaica', 'Guatemala', 'Nicaragua', 'Colombia', 'Paraguay', 'Uruguay', 'U.S. Virgin Islands', 'Honduras', 'Western Sahara']),
+  BLANK: new Set(['India'])
+};
+
+function regionKey(country){
+  if(!country) return "UNKNOWN";
+  if(REGION_SETS.BLANK.has(country)) return "";
+  if(REGION_SETS.ASIA.has(country)) return "ASIA";
+  if(REGION_SETS.ME.has(country)) return "ME";
+  if(REGION_SETS.EU.has(country)) return "EU";
+  if(REGION_SETS.NONEU.has(country)) return "NONEU";
+  if(REGION_SETS.AFRICA.has(country)) return "AFRICA";
+  if(REGION_SETS.AMERICAS.has(country)) return "AMERICAS";
+  return "UNKNOWN";
+}
+
+function labelRegionsInOrder(rows){
+  const counters = {ASIA:0, ME:0, EU:0, NONEU:0, AFRICA:0, AMERICAS:0, UNKNOWN:0};
+  return (rows||[]).map(r=>{
+    const k = regionKey(r.country);
+    if(k === "") return {...r, region:""}; // India/Nepal
+    counters[k] = (counters[k] || 0) + 1;
+    return {...r, region: `${k}-${counters[k]}`};
+  });
+}
+
+
+/* =========================================================
+   CAPITAL CITY helper
+   ========================================================= */
+const CAP_CITY = {
+  "S. Korea":"Seoul", "Mongolia":"Ulaanbaatar", "Philippines":"Manila", "Australia":"Canberra", 
+  "Indonesia":"Jakarta", "Singapore":"Singapore", "Malaysia":"Kuala Lumpur", "Vietnam":"Hanoi", 
+  "Thailand":"Bangkok", "India":"New Delhi", "Nepal":"Kathmandu", "U.A.E.":"Abu Dhabi", 
+  "Qatar":"Doha", "Saudi Arabia":"Riyadh", "Egypt":"Cairo", "Jordan":"Amman", "Israel":"Jerusalem", 
+  "Syria":"Damascus", "Cyprus":"Nicosia", "Türkiye":"Ankara", "Greece":"Athens", "Albania":"Tirana", 
+  "N. Macedonia":"Skopje", "Slovakia":"Bratislava", "Poland":"Warsaw", "Ukraine":"Kyiv", 
+  "Finland":"Helsinki", "Netherlands":"Amsterdam", "Switzerland":"Bern", "Italy":"Rome", 
+  "Spain":"Madrid", "Mali":"Bamako", "Morocco":"Rabat", "UK":"London", "USA":"Washington, D.C.", 
+  "Chile":"Santiago", "Argentina":"Buenos Aires", "Peru":"Lima", "Ecuador":"Quito", 
+  "Venezuela":"Caracas", "Mexico":"Mexico City", "Brazil":"Brasília", 
+  "China":"Beijing", "Taiwan":"Taipei", "Hong Kong":"Hong Kong", "Macau":"Macau", "Laos":"Vientiane", 
+  "Cambodia":"Phnom Penh", "Brunei":"Bandar Seri Begawan", "Papua New Guinea":"Port Moresby", 
+  "New Caledonia":"Nouméa", "Fiji":"Suva", "New Zealand":"Wellington", "Sri Lanka":"Sri Jayawardenepura Kotte", 
+  "Maldives":"Malé", "Kazakhstan":"Astana", "Kyrgyzstan":"Bishkek", "Uzbekistan":"Tashkent", 
+  "Tajikistan":"Dushanbe", "Turkmenistan":"Ashgabat", "Azerbaijan":"Baku", "Georgia":"Tbilisi", 
+  "Armenia":"Yerevan", "Iran":"Tehran", "Iraq":"Baghdad", "Bahrain":"Manama", "Oman":"Muscat", 
+  "Yemen":"Sana'a", "Kuwait":"Kuwait City", "Lebanon":"Beirut", "Montenegro":"Podgorica", 
+  "Bosnia and Herzegovina":"Sarajevo", "Serbia":"Belgrade", "Bulgaria":"Sofia", "Romania":"Bucharest", 
+  "Moldova":"Chișinău", "Belarus":"Minsk", "Estonia":"Tallinn", "Latvia":"Riga", "Lithuania":"Vilnius", 
+  "Germany":"Berlin", "Czechia":"Prague", "Austria":"Vienna", "Hungary":"Budapest", "Croatia":"Zagreb", 
+  "Slovenia":"Ljubljana", "Tunisia":"Tunis", "Libya":"Tripoli", "Algeria":"Algiers", 
+  "Western Sahara":"Laayoune", "Portugal":"Lisbon", "El Salvador":"San Salvador", "Costa Rica":"San José", 
+  "Panama":"Panama City", "Suriname":"Paramaribo", "Guyana":"Georgetown", "Grenada":"St. George's", 
+  "Barbados":"Bridgetown", "St. Lucia":"Castries", "Antigua and Barbuda":"St. John's", 
+  "Puerto Rico":"San Juan", "Jamaica":"Kingston", "Guatemala":"Guatemala City", "Nicaragua":"Managua", 
+  "Colombia":"Bogotá", "Paraguay":"Asunción", "Uruguay":"Montevideo", "U.S. Virgin Islands":"Charlotte Amalie", 
+  "Honduras":"Tegucigalpa"
+};
+function capCity(country){
+  return CAP_CITY[String(country||"").trim()] || "";
+}
+
+
+/* =========================================================
+   Renders
+   ========================================================= */
+const tbodyA=document.getElementById('table-a-body');
+
+function normalizeAirportName(s){
+  try{
+    s = String(s || "");
+    // Normalize common endings/phrases:
+    s = s.replace(/\bInternational Airport\b/gi, "INTL ARP");
+    s = s.replace(/\bInternational\b/gi, "INTL");
+    s = s.replace(/\bAirport\b/gi, "ARP");
+    // Clean double spaces
+    s = s.replace(/\s{2,}/g, " ").trim();
+    return s;
+  }catch(e){
+    return s || "";
+  }
+}
+
+function renderTableA(processed){
+  tbodyA.innerHTML = "";
+  const addedCodes = ["CNX","DLI","BSL","SIN","YIA","ASW","DEZ","SKP","ETR","ANF","MED","MAR","AJU","CUN","BTS", "ECN", "OTBH", "LLHB", "LAO", "ADW", "MRX", "UBN", "VST", "SVG", "RMO", "SPLC", "OST", "BYJ"];
+
+  processed.forEach(p=>{
+    const tr=document.createElement('tr');
+
+    if(p.code === 'VLO') tr.className = 'swapped-row';
+    else if(p.code === 'IAG' && p.sn === 52) tr.className = 'final-row';
+    else if(addedCodes.includes(p.code)) tr.classList.add('new-link');
+
+    tr.onclick=()=>{
+      document.getElementById('map-container').scrollIntoView({behavior:'smooth'});
+      fly(p.lat, p.lon);
+    };
+    tr.style.cursor="pointer";
+
+    const codeCell = (p.code && p.icao) ? `${p.code} / ${p.icao}` : (p.code || "");
+    const arp = (p.lat!=null && p.lon!=null) ? `${Number(p.lat).toFixed(4)}, ${Number(p.lon).toFixed(4)}` : "";
+
+    tr.innerHTML = `
+      <td class="center">${p.sn}</td>
+      <td class="center">${p.region || ""}</td>
+      <td>${p.country || ""}</td>
+      <td>${capCity(p.country)}</td>
+      <td>${p.city || ""}</td>
+      <td class="center"><b>${codeCell}</b></td>
+      <td><a href="${p.link}" target="_blank">${normalizeAirportName(p.name || "")}</a></td>
+      <td class="center"><a href="${runwayProviderUrl(p)}" target="_blank" rel="noopener">${p.rwy || ""}</a></td>
+      <td class="center">${p.brg || "00/00"}</td>
+      <td class="num">${(p.elev ?? "")}</td>
+      <td class="center">${p.qnh || ""}</td>
+      <td class="center" style="font-size:10px">${arp}</td>
+      <td class="num">${p.nextKm > 0 ? p.nextKm.toLocaleString() : "0"}</td>
+      <td style="font-weight:700">${p.timeStr}</td>
+    `;
+    tbodyA.appendChild(tr);
+  });
+}
+
+
+/* =========================================================
+   SORT HELPERS (v132) — table-only sorting by Region code
+   ========================================================= */
+const REGION_ORDER = ['ASIA', 'ME', 'EU', 'NONEU', 'AFRICA', 'AMERICAS', 'UNKNOWN'];
+function parseRegion(regionStr){
+  if(!regionStr) return {k:"", n: 0};
+  const m = String(regionStr).match(/^([A-Z]+)-(\d+)$/);
+  if(!m) return {k: regionStr, n: 0};
+  return {k: m[1], n: parseInt(m[2], 10)};
+}
+function regionSortKey(row){
+  const pr = parseRegion(row.region);
+  const idx = REGION_ORDER.indexOf(pr.k);
+  return {idx: (idx===-1? 999: idx), n: pr.n};
+}
+function sortByRegion(rows){
+  return (rows||[]).slice().sort((a,b)=>{
+    const ka = regionSortKey(a), kb = regionSortKey(b);
+    if(ka.idx !== kb.idx) return ka.idx - kb.idx;
+    if(ka.n !== kb.n) return ka.n - kb.n;
+    // stable fallback: by SN then code
+    return (a.sn||0) - (b.sn||0) || String(a.code||"").localeCompare(String(b.code||""));
+  });
+}
+
+/* =========================================================
+   Map
+   ========================================================= */
+const map = L.map('map', { zoomControl:true, worldCopyJump:true }).setView([20,0], 2);
+
+/* =========================================================
+   BASEMAP — LOCAL FILE / file:// SAFE
+   OSM now requires an identifiable request source when a
+   local HTML file cannot send a normal HTTP Referer.
+   Use X-Requested-With for tile requests, with an automatic
+   Esri fallback if OSM tiles are unavailable.
+   ========================================================= */
+const OSM_APP_ID = '52plusPUS-IAG_ROUTEv013_OST';
+const HeaderTileLayer = L.TileLayer.extend({
+  createTile: function(coords, done){
+    const tile = document.createElement('img');
+    tile.alt = '';
+    tile.setAttribute('role','presentation');
+    tile.referrerPolicy = 'strict-origin-when-cross-origin';
+    const url = this.getTileUrl(coords);
+    fetch(url, {
+      mode: 'cors',
+      headers: { 'X-Requested-With': OSM_APP_ID }
+    })
+    .then(response => {
+      if(!response.ok) throw new Error('Tile HTTP '+response.status);
+      return response.blob();
+    })
+    .then(blob => {
+      tile.src = URL.createObjectURL(blob);
+      tile.onload = () => done(null, tile);
+      tile.onerror = e => done(e, tile);
+    })
+    .catch(err => done(err, tile));
+    return tile;
+  }
+});
+
+const osmLayer = new HeaderTileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom:19,
+  attribution:'© OpenStreetMap contributors',
+  crossOrigin:true
+});
+
+const esriLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom:19,
+  attribution:'Tiles © Esri'
+});
+
+let activeBase = 'OSM';
+let fallbackActivated = false;
+function activateMapFallback(){
+  if(fallbackActivated) return;
+  fallbackActivated = true;
+  try { map.removeLayer(osmLayer); } catch(e) {}
+  esriLayer.addTo(map);
+  activeBase = 'ESRI';
+  const note = document.getElementById('map-status');
+  if(note) note.textContent = 'Basemap: ESRI fallback (OSM tile access unavailable)';
+}
+
+osmLayer.on('tileerror', activateMapFallback);
+osmLayer.addTo(map);
+setTimeout(()=>{
+  if(!fallbackActivated){
+    fetch('https://tile.openstreetmap.org/1/1/1.png', {mode:'cors'})
+      .then(r=>{ if(!r.ok) throw new Error('OSM check '+r.status); })
+      .catch(()=>activateMapFallback());
+  }
+}, 2500);
+
+/* Small non-blocking map status indicator */
+const mapStatus = document.createElement('div');
+mapStatus.id = 'map-status';
+mapStatus.style.cssText = 'position:absolute;left:8px;bottom:8px;z-index:1000;background:#fff;border:1px solid #173a8c;padding:3px 6px;font:10px Segoe UI,Arial,sans-serif;color:#173a8c;pointer-events:none;';
+mapStatus.textContent = 'Basemap: OpenStreetMap';
+document.getElementById('map-container').appendChild(mapStatus);
+
+const routeLineLayer = L.layerGroup().addTo(map);
+const markersLayer = L.layerGroup().addTo(map);
+let routeLine = null;
+let showFullLabels = true;
+
+function renderMarkers(processed){
+  markersLayer.clearLayers();
+  processed.forEach(p=>{
+    const pt=[p.lat, p.lon];
+    let html, cls, sz;
+
+    if(showFullLabels){
+      html = `<b>${p.sn}</b> <span style="font-size:9px;margin-left:2px">${p.code}</span>`;
+      cls='pill-icon'; sz=null;
+    } else {
+      html = `<b>${p.sn}</b>`;
+      cls='dot-icon'; sz=[20,20];
+    }
+    const icon = L.divIcon({ className: cls, html: html, iconSize: sz });
+
+    L.marker(pt, {icon})
+      .addTo(markersLayer)
+      .bindPopup(
+        `<div style="color:#173a8c">
+          <b>${p.sn}. ${p.city}</b><br>${normalizeAirportName(p.name)}<br>
+          <span style="font-size:10px">${Number(p.lat).toFixed(4)}, ${Number(p.lon).toFixed(4)}</span><br><span style="font-size:10px">Next BRG: ${(p.brgNext!=null && p.brgNext!=="") ? (p.brgNext+"°T") : ""} ${(p.nextKm!=null && p.nextKm!==0) ? (" • "+p.nextKm+" km") : ""}</span>
+        </div>`
+      );
+  });
+}
+
+function drawRouteLine(processed){
+  routeLineLayer.clearLayers();
+  const latlngs = processed.map(p=>[p.lat, p.lon]);
+  routeLine = L.polyline(latlngs, { color:'#173a8c', weight:2, opacity:0.85 });
+  routeLine.addTo(routeLineLayer);
+}
+
+function fitRoute(){
+  if(!routeLine) return;
+  const b = routeLine.getBounds();
+  if(b && b.isValid()) map.fitBounds(b, {padding:[55,55]});
+}
+
+const ToggleControl = L.Control.extend({
+  onAdd:function(){
+    const btn=L.DomUtil.create('button','leaflet-control-toggle');
+    btn.innerHTML='Toggle Labels';
+    btn.onclick=(e)=>{
+      L.DomEvent.stop(e);
+      showFullLabels=!showFullLabels;
+      renderMarkers(window.__processedRoute || []);
+    };
+    return btn;
+  }
+});
+new ToggleControl({position:'topright'}).addTo(map);
+
+const FitControl = L.Control.extend({
+  onAdd:function(){
+    const btn=L.DomUtil.create('button','leaflet-control-toggle');
+    btn.innerHTML='Fit Route';
+    btn.style.marginTop='6px';
+    btn.onclick=(e)=>{
+      L.DomEvent.stop(e);
+      map.invalidateSize();
+      fitRoute();
+    };
+    return btn;
+  }
+});
+new FitControl({position:'topright'}).addTo(map);
+
+let lineVisible=true;
+const LineControl=L.Control.extend({
+  onAdd:function(){
+    const btn=L.DomUtil.create('button','leaflet-control-toggle');
+    btn.innerHTML='Toggle Line';
+    btn.style.marginTop='6px';
+    btn.onclick=(e)=>{
+      L.DomEvent.stop(e);
+      lineVisible=!lineVisible;
+      if(lineVisible && routeLine) routeLine.addTo(routeLineLayer);
+      else routeLineLayer.clearLayers();
+    };
+    return btn;
+  }
+});
+new LineControl({position:'topright'}).addTo(map);
+
+window.fly = function(lat, lon){
+  map.invalidateSize();
+  map.flyTo([lat, lon], 6, {duration:1.5});
+};
+
+/* =========================================================
+   INIT (build tables, try auto-fill online)
+   ========================================================= */
+async function init(){
+  // Attempt auto-fill; if offline, keep current values (still valid)
+  let oa = null;
+  try { oa = await loadOurAirports(); } catch(e){ oa = null; }
+
+  // Enrich Table-A route points
+  if(oa){
+    routeData.forEach(p => enrichRoutePoint(p, oa));
+  } else {
+    // at least fill fallbacks
+    routeData.forEach(p => {
+      p.icao = ICAO_FALLBACK[p.code] || p.icao || "";
+      p.rwy = p.rwy || ""; p.brg = p.brg || deriveBrgFromRwyStr(p.rwy) || "00/00";
+    });
+  }
+
+  // Compute route legs + times (fixed start)
+  let totalKm = 0;
+  let currTime = new Date(2025, 9, 27, 12, 0, 0); // Mon 12:00 PM (local)
+  const speed = 905; // km/h
+  const defaultGround = 30 * 60 * 1000;
+
+  const processed = routeData.map((pt, i) => {
+    const sn = i + 1;
+
+    // Ground time calculation still happens for Arrival Journey math
+    const groundThisMs = (GROUND_TIME_MS[pt.code] ?? defaultGround);
+
+    let legDist = 0;
+
+    // Arrival/Journey time uses ground time at PREVIOUS stop
+    if(i > 0){
+      const prev = routeData[i-1];
+      legDist = calcDist(prev.lat, prev.lon, pt.lat, pt.lon);
+      totalKm += legDist;
+
+      const flightMs = (legDist / speed) * 60 * 60 * 1000;
+      const groundPrevMs = (GROUND_TIME_MS[prev.code] ?? defaultGround);
+
+      currTime = new Date(currTime.getTime() + flightMs + groundPrevMs);
+    }
+
+    return {
+      ...pt,
+      sn,
+      leg: legDist,
+      cum: totalKm,
+      groundStr: formatGround(groundThisMs),
+      timeStr: (i===0) ? "Mon 12:00 PM (Start)" : formatTime(currTime)
+    };
+  })
+
+  const processedWithRegions = labelRegionsInOrder(processed);
+  window.__processedRoute = processedWithRegions;
+
+
+  // NEXT km + BRG (to next) — recalculated v161
+  try{
+    for(let i=0;i<processedWithRegions.length;i++){
+      const a = processedWithRegions[i];
+      const b = processedWithRegions[i+1];
+      if(a && b && a.lat!=null && a.lon!=null && b.lat!=null && b.lon!=null){
+        a.nextKm = calcDist(a.lat, a.lon, b.lat, b.lon);
+        a.brgNext = calcBearing(a.lat, a.lon, b.lat, b.lon);
+      } else {
+        if(a){ a.nextKm = 0; a.brgNext = ""; }
+      }
+    }
+  }catch(e){}
+
+
+  // Table-A render
+  window.__routeRows = processedWithRegions;
+  window.__sortA = false;
+  renderTableA(window.__routeRows);
+
+  // Map
+  renderMarkers(processedWithRegions);
+  drawRouteLine(processedWithRegions);
+  setTimeout(()=>{ map.invalidateSize(); fitRoute(); }, 450);
+  window.addEventListener('resize', ()=>{ map.invalidateSize(); fitRoute(); });
+
+}
+
+init();
+
+// ===== Sort toggles (tables only) =====
+(function(){
+  const btnA = document.getElementById('toggleSortA');
+  if(btnA){
+    btnA.addEventListener('click', ()=>{
+      __sortA = !__sortA;
+      btnA.textContent = __sortA ? "Sort: REGION" : "Sort: ROUTE";
+      const rows = __sortA ? sortByRegion(__routeRows) : __routeRows;
+      renderTableA(rows);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IAG → LLHB → PUS · Route Details + Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  :root { --brand:#0a1a4a; --bg:#ffffff; --line:#e3e6ef; }
+  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:#111; }
+  header { background: var(--brand); color:#fff; padding:14px 16px; }
+  h1 { margin:0; font-size:18px; }
+  .container { padding:14px 16px; max-width: 1400px; margin: 0 auto; }
+  .kpis { display:flex; gap:12px; flex-wrap:wrap; margin: 10px 0 12px; }
+  .kpi { background:#f1f3fb; padding:8px 10px; border-radius:10px; }
+  .small { font-size:12px; color:#666; }
+  .grid { display:grid; grid-template-columns: 520px 1fr; gap:14px; align-items: start; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
+  .card { border:1px solid var(--line); border-radius: 12px; overflow:hidden; background:#fff; }
+  .card h2 { margin:0; font-size:14px; padding:10px 12px; background:#f6f7fb; border-bottom:1px solid var(--line); }
+  .card .content { padding:10px 12px; }
+  #mapbox { height: 620px; }
+  #map { width:100%; height:620px; }
+  @media (max-width: 1100px) { #map { height:480px; } }
+  table { width:100%; border-collapse: collapse; font-size: 13px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align:left; vertical-align: top; }
+  th { background:#fafbff; }
+  .num { text-align:right; font-family: Consolas, ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", monospace; }
+</style>
+</head>
+<body>
+<header>
+  <h1>IAG → LLHB → PUS · Route Details + Map</h1>
+</header>
+
+<div class="container">
+  <div class="kpis">
+    <div class="kpi"><b>Total Distance:</b> 17,760 km (9,590 NM)</div>
+    <div class="kpi"><b>Legs:</b> 2</div>
+    <div class="kpi"><b>Est. Flight Time:</b> 20h 37m</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Waypoints</h2>
+      <div class="content">
+        <table>
+          <thead><tr><th class="num">SN</th><th>IATA / ICAO</th><th>Airport</th><th>City</th><th class="num">Lat, Lon</th></tr></thead>
+          <tbody>
+<tr><td class='num'><b>1</b></td><td><b>IAG</b></td><td>Niagara Falls International Airport</td><td>Niagara Falls, United States</td><td class='num'>43.107000, -78.946000</td></tr>
+<tr><td class='num'><b>2</b></td><td><b>LLHB</b></td><td>Hatzerim Air Base</td><td>Beersheba, Israel</td><td class='num'>31.243333, 34.655000</td></tr>
+<tr><td class='num'><b>3</b></td><td><b>PUS</b></td><td>Gimhae International Airport</td><td>Busan, South Korea</td><td class='num'>35.179600, 128.938800</td></tr>
+</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" id="mapbox">
+      <h2>Interactive Map</h2>
+      <div class="content" style="padding:0">
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px;">
+    <h2>Legs</h2>
+    <div class="content">
+      <table>
+        <thead><tr><th class="num">#</th><th>From → To</th><th class="num">km</th><th class="num">NM</th><th class="num">Bearing</th><th class="num">Est. Time</th></tr></thead>
+        <tbody>
+<tr><td class='num'>1</td><td>IAG → LLHB<br><span class='small'>Niagara Falls International Airport → Hatzerim Air Base</span></td><td class='num'>9,340</td><td class='num'>5,043</td><td class='num'>52.0°</td><td class='num'>10h 51m</td></tr>
+<tr><td class='num'>2</td><td>LLHB → PUS<br><span class='small'>Hatzerim Air Base → Gimhae International Airport</span></td><td class='num'>8,420</td><td class='num'>4,546</td><td class='num'>57.3°</td><td class='num'>9h 47m</td></tr>
+</tbody>
+      </table>
+      <div class="small" style="margin-top:8px">Leg distance, NM, bearing, and time are for the final two-leg route IAG → LLHB → PUS.</div>
+    </div>
+  </div>
+
+  <div class="small" style="margin-top:10px">
+    Updated from the uploaded base file; final route is <b>IAG → LLHB → PUS</b>.
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map', { zoomControl: true });
+
+  // MAP ACCESS FIX:
+  // This HTML is intended to work when opened directly from a local file.
+  // OSM's public raster tile service requires a valid HTTP Referer for web
+  // pages, which a file:// document cannot reliably provide. Therefore Esri
+  // World Street Map is the default local-safe basemap. OSM is retained as
+  // an optional layer when the document is served over http/https.
+  const esri = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; <a href="https://www.esri.com/" target="_blank" rel="noopener">Esri</a>'
+    }
+  );
+
+  const osm = L.tileLayer(
+    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
+      referrerPolicy: 'strict-origin-when-cross-origin'
+    }
+  );
+
+  // Always start with Esri so local file:// opening does not hit the OSM
+  // Referer restriction. If hosted normally, OSM can be selected manually.
+  esri.addTo(map);
+
+  const baseMaps = {
+    'Esri World Street Map': esri,
+    'OpenStreetMap': osm
+  };
+  L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
+
+  const points = [{"iata":"IAG","name":"Niagara Falls International Airport","lat":43.107,"lon":-78.946,"city":"Niagara Falls","country":"United States"},{"iata":"LLHB","name":"Hatzerim Air Base","lat":31.243333,"lon":34.655,"city":"Beersheba","country":"Israel"},{"iata":"PUS","name":"Gimhae International Airport","lat":35.1796,"lon":128.9388,"city":"Busan","country":"South Korea"}];
+
+  const markers = [];
+  points.forEach((p, idx) => {
+    const m = L.marker([p.lat, p.lon]).addTo(map);
+    m.bindPopup(
+      `<b>${idx+1}. ${p.iata}</b> — ${p.name}<br/>${p.city}, ${p.country}<br/><small>${p.lat.toFixed(6)}, ${p.lon.toFixed(6)}</small>`
+    );
+    markers.push(m);
+  });
+
+  const latlngs = points.map(p => [p.lat, p.lon]);
+  const line = L.polyline(latlngs, { weight: 3 }).addTo(map);
+  const group = L.featureGroup([...markers, line]);
+  map.fitBounds(group.getBounds().pad(0.25));
+
+  const refit = () => { map.invalidateSize(); map.fitBounds(group.getBounds().pad(0.25)); };
+  setTimeout(refit, 250);
+  setTimeout(refit, 1200);
+  window.addEventListener('load', () => setTimeout(refit, 200));
+  window.addEventListener('resize', () => { map.invalidateSize(); });
+</script>
+</body>
+</html>

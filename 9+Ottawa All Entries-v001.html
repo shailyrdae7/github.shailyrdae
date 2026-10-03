@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ottawa — All Public Entry Points Interactive Map — FIXED</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--royal:#4169e1;--dark:#00008b;--pale:#f5f8ff;--line:#b7c7f5;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--dark);font-family:Arial,Helvetica,sans-serif;font-size:14px}
+#app{display:grid;grid-template-columns:340px minmax(0,1fr);height:100vh;min-height:620px}
+#panel{background:#fff;border-right:2px solid var(--line);padding:12px;overflow:auto}
+h1{font-size:18px;margin:0 0 6px;color:var(--dark)}h2{font-size:14px;margin:12px 0 6px;color:var(--royal)}
+.note{font-size:12px;line-height:1.4;color:var(--dark);background:var(--pale);border:1px solid var(--line);padding:8px;border-radius:7px}
+.controls{display:grid;gap:7px;margin:9px 0}label{font-size:12px;font-weight:700;color:var(--dark)}input,select,button{width:100%;min-height:38px;border:1px solid #9fb4ee;border-radius:6px;background:#fff;color:var(--dark);padding:7px 9px;font-size:14px}
+button{cursor:pointer;font-weight:700}button:hover{background:var(--pale)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:9px 0}.stat{border:1px solid var(--line);border-radius:7px;padding:7px;background:#fff}.stat b{display:block;font-size:18px;color:var(--royal)}.stat span{font-size:11px;color:var(--dark)}
+#list{display:grid;gap:5px}.item{border:1px solid var(--line);border-radius:6px;padding:7px;cursor:pointer;background:#fff}.item:hover,.item.active{background:var(--pale);border-color:var(--royal)}.num{font-weight:800;color:var(--royal);margin-right:5px}.small{font-size:11px;color:var(--dark)}
+#map{height:100%;min-width:0}.legend{background:#fff;border:1px solid var(--line);padding:8px;border-radius:6px;color:var(--dark);line-height:1.5}.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;border:1px solid #fff}
+.entry-icon{background:var(--royal);border:2px solid #fff;border-radius:50%;width:26px;height:26px;color:#fff;font-weight:800;text-align:center;line-height:22px;font-size:11px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.bridge-icon{background:var(--dark)}.leaflet-popup-content,.leaflet-control{color:var(--dark)}
+@media(max-width:820px){#app{grid-template-columns:1fr;height:auto}#panel{border-right:0;border-bottom:2px solid var(--line);max-height:48vh}#map{height:65vh;min-height:520px}}
+</style>
+</head>
+<body>
+<div id="app">
+<aside id="panel">
+<h1>Ottawa — Public Entry Points</h1>
+<div class="note"><strong>FIXED MAP BASE:</strong> Uses an ArcGIS/Esri street-map tile service instead of the blocked OpenStreetMap raster server. Interactive map derived from the City of Ottawa official municipal boundary and operational road GIS. Entry points are boundary-road locations; the interprovincial crossings are separately highlighted. The exact total can change as Ottawa updates its GIS.</div>
+<div class="stats"><div class="stat"><b id="count">—</b><span>Derived entry points</span></div><div class="stat"><b id="bridges">5</b><span>Ottawa–Gatineau crossings</span></div></div>
+<div class="controls">
+<label for="search">Search road / entry</label><input id="search" placeholder="e.g. Highway 417, Bank, Quebec">
+<label for="filter">Show</label><select id="filter"><option value="all">All entry points</option><option value="highway">Highway / freeway</option><option value="arterial">Arterial / major collector</option><option value="local">Other boundary roads</option><option value="bridge">Ottawa–Gatineau crossings</option></select>
+<button id="fit">Fit all entry points</button><button id="reload">Reload official GIS data</button>
+</div>
+<h2>Numbered entry list</h2><div id="status" class="small">Loading official Ottawa GIS…</div>
+<div id="list"></div>
+<h2>Sources</h2><div class="small">City of Ottawa: City Boundary / Official Plan; Road Information — Roads Classification; geoOttawa. Federal/NCC sources should be consulted for current bridge restrictions and construction conditions.</div>
+</aside>
+<main id="map"></main>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
+<script>
+const BOUNDARY='https://maps.ottawa.ca/arcgis/rest/services/Planning/MapServer/15/query';
+const ROADS='https://maps.ottawa.ca/arcgis/rest/services/Road_Information/MapServer/3/query';
+const BRIDGES=[
+ {id:'B1',name:'Macdonald-Cartier Bridge',lat:45.4350,lng:-75.7005,road:'King Edward Avenue / Autoroute 5',side:'Ottawa ↔ Gatineau'},
+ {id:'B2',name:'Alexandra Bridge',lat:45.4300,lng:-75.7048,road:'Sussex Drive / Rue des Allumettières',side:'Ottawa ↔ Gatineau'},
+ {id:'B3',name:'Chaudière Crossing',lat:45.4207,lng:-75.7115,road:'Booth Street / Rue Eddy',side:'Ottawa ↔ Gatineau'},
+ {id:'B4',name:'Portage Bridge',lat:45.4217,lng:-75.7087,road:'Wellington Street / Rue Wellington',side:'Ottawa ↔ Gatineau'},
+ {id:'B5',name:'Champlain Bridge',lat:45.3835,lng:-75.7855,road:'Island Park Drive / Boulevard Alexandre-Taché',side:'Ottawa ↔ Gatineau'}
+];
+const map=L.map('map',{preferCanvas:true}).setView([45.4215,-75.6972],10);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'© Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), OpenStreetMap contributors, and the GIS User Community'}).addTo(map);
+let boundaryLayer, roadLayer, markers=[], entryData=[], selected=null;
+const $=id=>document.getElementById(id);
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function arcgis(params){const u=new URL(params.url);Object.entries(params).forEach(([k,v])=>k!=='url'&&u.searchParams.set(k,v));const r=await fetch(u);if(!r.ok)throw new Error(r.status+' '+r.statusText);return r.json()}
+async function getAllRoads(){
+ let out=[],offset=0;
+ while(true){
+  const j=await arcgis({url:ROADS,where:"CURRENT_STATUS='Operational' OR CURRENT_STATUS='Open to Traffic'",outFields:'OBJECTID,SUBTYPE_TEXT,CURRENT_STATUS,ROAD_NAME,FULL_ROADNAME_EN,FULL_ROADNAME_FR,ROAD_SIGN_TEXT,DIRECTION,BOUNDARY_RD,OWNERSHIP,FLOW',returnGeometry:'true',outSR:'4326',f:'geojson',resultOffset:offset,resultRecordCount:1000});
+  const fs=j.features||[];out.push(...fs);if(fs.length<1000)break;offset+=1000;if(offset>30000)break;
+ }return {type:'FeatureCollection',features:out}
+}
+function roadClass(p){const c=(p.SUBTYPE_TEXT||'').toLowerCase();if(c.includes('freeway')||c.includes('highway'))return'highway';if(c.includes('arterial')||c.includes('major collector'))return'arterial';return'local'}
+function boundaryPoint(line,boundary){
+ try{
+  const inter=turf.lineSplit(line,boundary); // not sufficient for polygon
+ }catch(e){}
+}
+function endpointNearBoundary(line,poly){
+ const coords=line.geometry.coordinates; if(!coords?.length)return null;
+ const pts=[coords[0],coords[coords.length-1]];
+ let best=null,bestD=Infinity;
+ for(const c of pts){const pt=turf.point(c);const d=turf.pointToLineDistance(pt,turf.polygonToLine(poly),{units:'meters'});if(d<bestD){bestD=d;best=pt}}
+ return bestD<=80?best:null;
+}
+function dedupe(points){
+ const out=[];for(const x of points){let hit=out.find(y=>turf.distance(x.point,y.point,{units:'meters'})<120);if(!hit)out.push(x);else{const a=(hit.road||'').length,b=(x.road||'').length;if(b>a)Object.assign(hit,x)}}return out;
+}
+function addEntry(x,i){
+ const cls=roadClass(x.props);const icon=L.divIcon({className:'',html:`<div class="entry-icon">${i+1}</div>`,iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-13]});
+ const m=L.marker([x.point.geometry.coordinates[1],x.point.geometry.coordinates[0]],{icon}).addTo(map);
+ m.bindPopup(`<b style="color:#00008b">Entry ${i+1}</b><br><strong>${esc(x.road)}</strong><br>${esc(x.props.SUBTYPE_TEXT||'Boundary road')}<br>${esc(x.props.DIRECTION||'Direction not specified')}<br><span style="color:#4169e1">${esc(x.props.ROAD_SIGN_TEXT||'')}</span>`);
+ m._entry={...x,number:i+1,cls};markers.push(m);
+}
+function renderList(){
+ const q=$('search').value.trim().toLowerCase(),f=$('filter').value;const items=entryData.filter(x=>(f==='all'||x.cls===f)&&(f!=='bridge')&&(`${x.road} ${x.props.ROAD_SIGN_TEXT||''} ${x.props.SUBTYPE_TEXT||''}`.toLowerCase().includes(q)));
+ $('count').textContent=entryData.length;$('list').innerHTML='';
+ items.forEach(x=>{const d=document.createElement('div');d.className='item';d.innerHTML=`<span class="num">${x.number}</span><strong>${esc(x.road)}</strong><br><span class="small">${esc(x.props.SUBTYPE_TEXT||'Boundary road')} · ${esc(x.props.DIRECTION||'')}</span>`;d.onclick=()=>{map.setView([x.point.geometry.coordinates[1],x.point.geometry.coordinates[0]],15);const m=markers.find(mm=>mm._entry===x);if(m)m.openPopup()};$('list').appendChild(d)});
+ if(f==='bridge'||f==='all')B1list(q);
+}
+function B1list(q){const bridgeItems=BRIDGES.filter(b=>`${b.name} ${b.road}`.toLowerCase().includes(q));bridgeItems.forEach(b=>{const d=document.createElement('div');d.className='item';d.innerHTML=`<span class="num">${b.id}</span><strong>${esc(b.name)}</strong><br><span class="small">${esc(b.road)} · ${esc(b.side)}</span>`;d.onclick=()=>map.setView([b.lat,b.lng],15);$('list').appendChild(d)})}
+function addBridges(){BRIDGES.forEach(b=>{const icon=L.divIcon({className:'',html:`<div class="entry-icon bridge-icon">${b.id.slice(1)}</div>`,iconSize:[26,26],iconAnchor:[13,13]});const m=L.marker([b.lat,b.lng],{icon}).addTo(map);m._bridge=true;m.bindPopup(`<b style="color:#00008b">${esc(b.name)}</b><br>${esc(b.road)}<br>${esc(b.side)}<br><span style="color:#4169e1">Interprovincial crossing</span>`);markers.push(m)})}
+function applyFilter(){const q=$('search').value.toLowerCase(),f=$('filter').value;markers.forEach(m=>{let show=true;if(m._bridge)show=(f==='all'||f==='bridge')&&(`${m._entry?.name||''}`.toLowerCase().includes(q)||f==='all'||f==='bridge');else show=f!=='bridge'&&(f==='all'||m._entry.cls===f)&&(`${m._entry.road} ${m._entry.props.ROAD_SIGN_TEXT||''}`.toLowerCase().includes(q));if(show)m.addTo(map);else map.removeLayer(m)});renderList()}
+async function load(){
+ $('status').textContent='Loading official Ottawa boundary…';
+ const bj=await arcgis({url:BOUNDARY,where:'1=1',outFields:'NAME,AREA_HA',returnGeometry:'true',outSR:'4326',f:'geojson'});const poly=bj.features[0];boundaryLayer=L.geoJSON(poly,{style:{color:'#00008b',weight:3,fill:false,dashArray:'8 6'}}).addTo(map);
+ $('status').textContent='Loading official operational roads…';const roads=await getAllRoads();
+ roadLayer=L.geoJSON(roads,{style:f=>({color:f.properties.SUBTYPE_TEXT?.includes('Freeway')?'#4169e1':'#9aaee8',weight:f.properties.SUBTYPE_TEXT?.includes('Freeway')?2.5:1,opacity:.55})}).addTo(map);
+ const candidates=[];for(const f of roads.features){const p=f.properties||{};if(!p.BOUNDARY_RD||String(p.BOUNDARY_RD).toLowerCase()==='no')continue;const pt=endpointNearBoundary(f,poly);if(pt)candidates.push({point:pt,road:p.FULL_ROADNAME_EN||p.ROAD_NAME||'Unnamed boundary road',props:p})}
+ const ded=dedupe(candidates).sort((a,b)=>a.point.geometry.coordinates[1]-b.point.geometry.coordinates[1]);entryData=ded.map((x,i)=>({...x,number:i+1,cls:roadClass(x.props)}));entryData.forEach((x,i)=>addEntry(x,i));addBridges();
+ $('status').textContent=`Loaded ${entryData.length} GIS-derived boundary entry points plus 5 interprovincial crossings. Map base: Esri World Street Map.`;renderList();
+ const all=[...entryData.map(x=>[x.point.geometry.coordinates[1],x.point.geometry.coordinates[0]]),...BRIDGES.map(b=>[b.lat,b.lng])];if(all.length)map.fitBounds(all,{padding:[30,30]});
+}
+$('search').addEventListener('input',applyFilter);$('filter').addEventListener('change',applyFilter);$('fit').addEventListener('click',()=>{const all=[...entryData.map(x=>[x.point.geometry.coordinates[1],x.point.geometry.coordinates[0]]),...BRIDGES.map(b=>[b.lat,b.lng])];map.fitBounds(all,{padding:[30,30]})});$('reload').addEventListener('click',()=>location.reload());
+load().catch(e=>{$('status').textContent='GIS loading error: '+e.message+'. Check internet access and reload.';console.error(e)});
+</script>
+</body></html>
