@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17449a">
+  <title>Actual Turn-by-Turn Route | Washington, DC to Niagara Falls, Ontario</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --royal: #17449a;
+      --deep: #102f70;
+      --blue2: #315b9e;
+      --pale: #edf4ff;
+      --pale2: #f6f9ff;
+      --line: #c8d8f2;
+      --gold: #f2c85b;
+      --gold-pale: #fff5d8;
+      --white: #fff;
+      --shadow: 0 14px 38px rgba(16,47,112,.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg,#eaf2ff 0,#f8fbff 360px,#f4f8ff 100%);
+      color: var(--deep);
+      font-family: "Segoe UI",Arial,sans-serif;
+      line-height: 1.5;
+    }
+    a { color: var(--royal); font-weight: 700; text-underline-offset: 3px; }
+    .shell { max-width: 1180px; margin: 0 auto; padding: 28px 22px 54px; }
+    .hero {
+      border: 1px solid #c5d7f4; border-radius: 24px;
+      background: linear-gradient(135deg,#fff 0%,#eef5ff 70%,#e4efff 100%);
+      box-shadow: var(--shadow); padding: clamp(24px,5vw,52px);
+    }
+    .eyebrow { color: var(--blue2); font-size: .76rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { color: var(--royal); font-size: clamp(2rem,5vw,3.55rem); line-height: 1.04; margin: 10px 0 12px; max-width: 900px; letter-spacing: -.035em; }
+    .subtitle { margin: 0; max-width: 850px; color: var(--blue2); font-size: 1.08rem; }
+    .endpoints { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 14px; margin-top: 30px; max-width: 920px; }
+    .endpoint { border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,.9); padding: 16px 18px; }
+    .endpoint small { display: block; color: var(--blue2); font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; margin-bottom: 5px; }
+    .endpoint strong { color: var(--deep); display: block; font-size: 1rem; }
+    .endpoint span { display: block; color: var(--blue2); font-size: .88rem; margin-top: 3px; }
+    .arrow { align-self: center; color: var(--royal); font-size: 1.65rem; font-weight: 800; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .button { display: inline-flex; align-items: center; gap: 9px; background: var(--pale); color: var(--royal); border: 2px solid var(--royal); border-radius: 10px; padding: 11px 16px; text-decoration: none; font-weight: 800; }
+    .button.secondary { background: #fff; color: var(--royal); }
+    .button:hover { background: #dce9ff; }
+    .section { margin-top: 25px; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin: 0 2px 12px; }
+    h2 { color: var(--royal); font-size: clamp(1.35rem,3vw,1.8rem); margin: 0; letter-spacing: -.02em; }
+    .section-head p { color: var(--blue2); margin: 0; font-size: .88rem; }
+    .card { background: var(--white); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
+    .map-card { overflow: hidden; }
+    .map-top { display: flex; justify-content: space-between; align-items: center; padding: 17px 20px 8px; gap: 12px; }
+    .map-top strong { color: var(--royal); font-size: 1rem; }
+    .not-scale { color: var(--blue2); font-size: .76rem; font-weight: 700; }
+    .map-frame { display: block; width: 100%; height: min(68vh,650px); min-height: 420px; border: 0; background: var(--pale); }
+    .map-caption { padding: 10px 20px 17px; color: var(--blue2); font-size: .84rem; }
+    .summary-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-top: 14px; }
+    .metric { padding: 18px 19px; background: linear-gradient(140deg,#f1f6ff,#fff); }
+    .metric small { display: block; color: var(--blue2); font-weight: 800; letter-spacing: .09em; text-transform: uppercase; font-size: .71rem; }
+    .metric strong { display: block; color: var(--royal); font-size: clamp(1.5rem,3vw,2.25rem); letter-spacing: -.03em; line-height: 1.12; margin: 8px 0 5px; }
+    .metric p { color: var(--blue2); margin: 0; font-size: .82rem; }
+    .callout { padding: 18px 20px; margin-top: 14px; background: var(--gold-pale); border-color: #e2c357; }
+    .callout strong { color: var(--deep); }
+    .callout p { margin: 5px 0 0; color: var(--deep); }
+    .stage-table-wrap,.toll-table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 700px; }
+    th,td { text-align: left; padding: 12px 14px; border-bottom: 1px solid #d9e4f6; vertical-align: top; }
+    th { color: var(--royal); background: #f0f5ff; font-size: .73rem; letter-spacing: .08em; text-transform: uppercase; }
+    td { color: var(--deep); font-size: .9rem; }
+    td strong { color: var(--royal); }
+    tbody tr:last-child td { border-bottom: 0; }
+    .number { white-space: nowrap; font-weight: 800; color: var(--royal); }
+    .route-stages { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .stage { padding: 18px 20px; }
+    .stage h3 { margin: 0; color: var(--royal); font-size: 1.03rem; }
+    .stage .stage-meta { color: var(--blue2); margin: 4px 0 11px; font-size: .84rem; font-weight: 700; }
+    .stage ol { margin: 0; padding-left: 22px; color: var(--deep); }
+    .stage li { margin: 7px 0; padding-left: 3px; }
+    .stage li::marker { color: var(--royal); font-weight: 800; }
+    .stage .caution { margin: 10px 0 0; color: var(--blue2); font-size: .82rem; }
+    .toll-total { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; margin-top: 14px; }
+    .total-card { padding: 21px; background: linear-gradient(140deg,#f1f6ff,#fff); }
+    .total-card small { display: block; color: var(--blue2); font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .total-card strong { display: block; color: var(--royal); font-size: clamp(1.7rem,4vw,2.6rem); letter-spacing: -.04em; line-height: 1.1; margin: 8px 0; }
+    .total-card p { margin: 0; color: var(--blue2); font-size: .9rem; }
+    .notes { padding: 20px 22px; }
+    .notes h3 { color: var(--royal); margin: 0 0 8px; font-size: 1.07rem; }
+    .notes ul { margin: 0; padding-left: 20px; color: var(--deep); }
+    .notes li { margin: 7px 0; padding-left: 3px; }
+    .notes li::marker { color: var(--royal); }
+    .fineprint { color: var(--blue2); font-size: .82rem; margin: 14px 0 0; }
+    .source-list { display: flex; flex-wrap: wrap; gap: 9px 17px; margin-top: 10px; font-size: .84rem; }
+    .footer { padding: 16px 4px 0; color: var(--blue2); font-size: .8rem; }
+    @media(max-width:800px) {
+      .summary-row { grid-template-columns: 1fr 1fr; }
+      .route-stages { grid-template-columns: 1fr; }
+      .toll-total { grid-template-columns: 1fr; }
+      .section-head { align-items: flex-start; flex-direction: column; }
+    }
+    @media(max-width:520px) {
+      .shell { padding: 13px 12px 32px; }
+      .endpoints { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); justify-self: center; line-height: .7; }
+      .summary-row { grid-template-columns: 1fr; }
+      .map-frame { min-height: 360px; height: 55vh; }
+      .map-top { align-items: flex-start; flex-direction: column; }
+      .hero { border-radius: 17px; }
+    }
+    @media print {
+      body { background: #fff; }
+      .shell { max-width: none; padding: 0; }
+      .hero,.card { box-shadow: none; }
+      .actions { display: none; }
+      .map-frame { height: 420px; }
+      a { text-decoration: none; }
+      .stage { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="hero">
+    <div class="eyebrow">Actual Google Maps driving route · highway-focused</div>
+    <h1>Washington, D.C. to Niagara Falls, Ontario</h1>
+    <p class="subtitle">Mapped from the White House address to 7246 Parkside Road using Google Maps’ current fastest route. The numbered turns below follow the live directions via I-70 W and the Peace Bridge.</p>
+    <div class="endpoints" aria-label="Route endpoints">
+      <div class="endpoint"><small>Start</small><strong>1600 Pennsylvania Avenue NW</strong><span>White House · Washington, DC 20500, USA</span></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="endpoint"><small>Destination</small><strong>7246 Parkside Road</strong><span>Niagara Falls, Ontario, Canada · destination on the left</span></div>
+    </div>
+    <div class="actions">
+      <a class="button" href="https://www.google.com/maps/dir/?api=1&amp;origin=1600%20Pennsylvania%20Ave%20NW%2C%20Washington%2C%20DC%2020500%2C%20USA&amp;destination=7246%20Parkside%20Rd%2C%20Niagara%20Falls%2C%20ON%20L2H%203V5&amp;travelmode=driving" target="_blank" rel="noopener">Open live turn-by-turn directions ↗</a>
+      <a class="button secondary" href="#timing">View journey time ↓</a>
+      <a class="button secondary" href="#tolls">View route tolls ↓</a>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="map-title">
+    <div class="section-head">
+      <h2 id="map-title">Live route map</h2>
+      <p>Interactive Google Maps route · internet connection required</p>
+    </div>
+    <div class="card map-card">
+      <div class="map-top"><strong>402 mi · via I-70 W · enter Canada at the Peace Bridge</strong><span class="not-scale">Live map</span></div>
+      <iframe class="map-frame" title="Interactive Google Maps driving route from Washington DC to 7246 Parkside Road, Niagara Falls, Ontario"
+        src="https://maps.google.com/maps?output=embed&amp;saddr=1600%20Pennsylvania%20Ave%20NW%2C%20Washington%2C%20DC%2020500%2C%20USA&amp;daddr=7246%20Parkside%20Rd%2C%20Niagara%20Falls%2C%20ON%20L2H%203V5&amp;dirflg=d"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <div class="map-caption">If the embedded map does not load in your browser, use “Open live turn-by-turn directions” above. Google’s route currently flags tolls, an international border, and a restricted-use/private-road advisory; review that advisory on the live map before setting out.</div>
+    </div>
+  </section>
+
+  <section class="section" id="timing" aria-labelledby="timing-title">
+    <div class="section-head"><h2 id="timing-title">Journey time at 75 km/h</h2><p>Calculated from the mapped route distance</p></div>
+    <div class="summary-row">
+      <div class="card metric"><small>Google route distance</small><strong>402 mi</strong><p>About 647.0 km</p></div>
+      <div class="card metric"><small>Assumed planning speed</small><strong>75 km/h</strong><p>Constant average for this estimate</p></div>
+      <div class="card metric"><small>Calculated moving time</small><strong>8 hr 38 min</strong><p>647.0 km ÷ 75 km/h</p></div>
+      <div class="card metric"><small>Google live estimate</small><strong>7 hr 9 min</strong><p>Current route estimate; live traffic may change it</p></div>
+    </div>
+    <div class="card callout">
+      <strong>Time estimate assumptions</strong>
+      <p>75 km/h is used as the requested calculation rate, not represented as the legal posted speed limit. The route crosses roads with different posted limits. The 8 hr 38 min figure excludes fuel, food, rest breaks, congestion, construction, border/customs queues, and any delay from the restricted-road advisory. No departure date or clock time was specified, so this file shows elapsed time rather than a scheduled arrival time.</p>
+    </div>
+    <div class="section-head" style="margin-top:18px"><h2 style="font-size:1.2rem">Elapsed-time checkpoints</h2><p>Approximate time from departure at a constant 75 km/h</p></div>
+    <div class="card stage-table-wrap">
+      <table>
+        <thead><tr><th>Route section</th><th>Mapped distance</th><th>Estimated section time</th><th>Elapsed from start</th></tr></thead>
+        <tbody>
+          <tr><td>Washington, DC → I-99 N / US-220 N Exit 52 (including initial access)</td><td class="number">193.4 mi / 311.2 km</td><td class="number">4 hr 09 min</td><td class="number">4 hr 09 min</td></tr>
+          <tr><td>PA-350 N and US-322 W → I-80 W</td><td class="number">27.3 mi / 43.9 km</td><td class="number">35 min</td><td class="number">4 hr 44 min</td></tr>
+          <tr><td>I-80 W → PA-153 N, Exit 111</td><td class="number">12.3 mi / 19.8 km</td><td class="number">16 min</td><td class="number">5 hr 00 min</td></tr>
+          <tr><td>PA-153 N → US-219 N in Ashford, NY</td><td class="number">113 mi / 181.9 km</td><td class="number">2 hr 26 min</td><td class="number">7 hr 26 min</td></tr>
+          <tr><td>US-219 N → Peace Bridge → QEW Exit 27 / McLeod Road</td><td class="number">55 mi / 88.5 km</td><td class="number">1 hr 11 min</td><td class="number">8 hr 37 min</td></tr>
+          <tr><td>McLeod Road → Parkside Road / destination</td><td class="number">1.1 mi / 1.8 km</td><td class="number">1 min</td><td class="number">8 hr 38 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="turns-title">
+    <div class="section-head"><h2 id="turns-title">Turn-by-turn highway directions</h2><p>Turn order and distances transcribed from the live Google Maps route</p></div>
+    <div class="route-stages">
+      <article class="card stage">
+        <h3>1 · White House area → I-99 Exit 52</h3>
+        <p class="stage-meta">Google Maps section: about 3 hr 09 min · 193.4 mi including initial access</p>
+        <ol>
+          <li>Get onto I-66 W from E Street NW and E Street Expressway. Merge onto I-66 W for 1.0 mi; take Exit 73 for US-29 / Lee Highway toward Key Bridge / Rosslyn (0.2 mi).</li>
+          <li>Use the middle lane to turn right onto US-29 N / N Lynn Street (184 ft); use the left two lanes to turn slightly left (0.4 mi).</li>
+          <li>Merge onto George Washington Memorial Parkway (7.7 mi); take the exit onto I-495 N toward Maryland (4.0 mi).</li>
+          <li>Use the left three lanes to turn slightly left onto I-270 N (31.4 mi); take Exit 32 from the right two lanes and merge onto I-70 W toward Hagerstown (76.7 mi).</li>
+          <li>Use the right lane for US-30 E toward I-70 W / Harrisburg / McConnellsburg / New Stanton / Pennsylvania Turnpike (312 ft); continue on US-30 E / S Main Street (0.2 mi).</li>
+          <li>Turn right onto the I-70 ramp toward Harrisburg / New Stanton / I-76 (397 ft); continue I-70 W (1.5 mi), then take I-70 W / I-76 W toward Pittsburgh (15.8 mi).</li>
+          <li>Take Exit 146 toward Altoona / Johnstown (0.3 mi); turn left onto Business 220 N (0.3 mi), then left onto the I-99 / US-220 ramp (0.2 mi).</li>
+          <li>Merge onto I-99 N / US-220 N toward Altoona (51.2 mi); take Exit 52 toward PA-350 / Bald Eagle / Philipsburg (0.6 mi).</li>
+        </ol>
+        <p class="caution">Toll note: Google marks the I-66 segment and I-70 / I-76 connection as toll roads. See the conditional I-66 toll and Pennsylvania Turnpike prices below.</p>
+      </article>
+
+      <article class="card stage">
+        <h3>2 · Exit 52 → I-80 W</h3>
+        <p class="stage-meta">Google Maps section: 37 min · 27.3 mi</p>
+        <ol>
+          <li>Turn left and follow the ramp for 0.6 mi; continue north on PA-350 N (14.0 mi).</li>
+          <li>Turn right onto E Beaver Street (46 ft), then left onto S Centre Street (0.5 mi).</li>
+          <li>Continue straight onto US-322 W / N 3rd Street / N Centre Street (10.4 mi).</li>
+          <li>Turn right onto PA-970 N (1.6 mi), then left onto the ramp toward DuBois (0.3 mi) and merge onto I-80 W (11.8 mi).</li>
+          <li>Take Exit 111 to merge onto PA-153 N (0.6 mi).</li>
+        </ol>
+      </article>
+
+      <article class="card stage">
+        <h3>3 · PA-153 N → US-219 N</h3>
+        <p class="stage-meta">Google Maps section: 2 hr 17 min · 113 mi</p>
+        <ol>
+          <li>Continue on PA-153 N (16.3 mi), then turn right onto US-219 N (11.8 mi).</li>
+          <li>Turn right onto US-219 N / N Broad Street and continue following US-219 N (8.7 mi); continue straight onto US-219 N / Wilcox Road (5.3 mi).</li>
+          <li>Slight right to stay on US-219 N and continue into New York (39.5 mi).</li>
+          <li>Continue onto US-219 Business (0.6 mi); turn left onto US-219 Business N (5.6 mi).</li>
+          <li>Turn right onto Killbuck Road (1.8 mi); bear slightly right onto US-219 N (3.4 mi).</li>
+          <li>Turn left to stay on US-219 N (4.8 mi); turn right onto US-219 N / Washington Street (1.0 mi).</li>
+          <li>Turn left to stay on US-219 N (13.7 mi); at the traffic circle, take the first exit and stay on US-219 N (0.4 mi).</li>
+          <li>Turn left onto the US-219 N ramp toward Buffalo (0.2 mi).</li>
+        </ol>
+      </article>
+
+      <article class="card stage">
+        <h3>4 · US-219 N → Peace Bridge → QEW Exit 27</h3>
+        <p class="stage-meta">Google Maps section: 55 min · 55 mi · border crossing into Ontario</p>
+        <ol>
+          <li>Continue on US-219 N (27.9 mi); merge onto I-90 E (2.6 mi).</li>
+          <li>Use the right two lanes to take Exit 53 for I-190 toward Downtown Buffalo / Niagara Falls (0.5 mi); continue onto I-190 N (6.3 mi).</li>
+          <li>Use the right two lanes to take Exit 9 for the Peace Bridge (0.6 mi); continue onto Peace Bridge (0.3 mi) and cross into Ontario.</li>
+          <li>Continue onto Queen Elizabeth Way (QEW) (0.4 mi); bear left to stay on QEW (16.1 mi).</li>
+          <li>Use the right two lanes to take Exit 27 for McLeod Road / Regional Road 49 (0.3 mi).</li>
+        </ol>
+        <p class="caution">This is the Peace Bridge crossing shown by the actual selected route. It is not the Lewiston–Queenston Bridge route.</p>
+      </article>
+
+      <article class="card stage">
+        <h3>5 · McLeod Road → 7246 Parkside Road</h3>
+        <p class="stage-meta">Google Maps section: 4 min · about 1.1 mi</p>
+        <ol>
+          <li>Use the left two lanes to turn left onto McLeod Road (1.1 mi).</li>
+          <li>Turn left onto Parkside Road (about 305 ft). The mapped destination is on the left.</li>
+        </ol>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="tolls" aria-labelledby="tolls-title">
+    <div class="section-head"><h2 id="tolls-title">Tolls on this mapped route</h2><p>One-way trip · standard 2-axle passenger car</p></div>
+    <div class="card toll-table-wrap">
+      <table>
+        <thead><tr><th>Facility</th><th>Route location</th><th>Cash / plate / no transponder</th><th>E-ZPass</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>I-66 Express Lanes inside the Beltway</strong></td>
+            <td>Initial westbound I-66 segment in Virginia</td>
+            <td>Dynamic toll only during weekday westbound peak operation</td>
+            <td>Pay dynamically; HOV-3+ with E-ZPass Flex in HOV mode is free</td>
+            <td>Weekdays 3:00–7:00 p.m. (except federal holidays); free at other times. Price changes with traffic, so no exact amount can be stated without the departure time. Check the signed price before entering.</td>
+          </tr>
+          <tr>
+            <td><strong>Pennsylvania Turnpike · I-76</strong></td>
+            <td>Breezewood Exit 161 → Bedford Exit 146</td>
+            <td class="number">US$4.46 Toll By Plate</td>
+            <td class="number">US$2.23</td>
+            <td>2026 rate for a standard 2-axle low passenger vehicle, traveling westbound on this short Turnpike section.</td>
+          </tr>
+          <tr>
+            <td><strong>Peace Bridge</strong></td>
+            <td>Buffalo, NY → Fort Erie, ON (entering Canada)</td>
+            <td class="number">US$3.00 cash (or C$3.00 cash)</td>
+            <td class="number">US$2.70</td>
+            <td>One-way toll collected entering Canada. Google’s selected route crosses here.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="toll-total">
+      <div class="card total-card">
+        <small>Fixed toll subtotal · cash / plate</small>
+        <strong>US$7.46</strong>
+        <p>US$4.46 Pennsylvania Turnpike + US$3.00 Peace Bridge. Add any I-66 dynamic charge if using its weekday westbound toll period.</p>
+      </div>
+      <div class="card total-card">
+        <small>Fixed toll subtotal · E-ZPass</small>
+        <strong>US$4.93</strong>
+        <p>US$2.23 Pennsylvania Turnpike + US$2.70 Peace Bridge. Add any I-66 dynamic charge if applicable.</p>
+      </div>
+    </div>
+    <div class="card notes" style="margin-top:14px">
+      <h3>Route-specific toll notes</h3>
+      <ul>
+        <li>The route has one conditional toll facility near Washington (I-66), one Pennsylvania Turnpike segment, and the Peace Bridge charge entering Canada.</li>
+        <li>This selected Google route does <strong>not</strong> take the New York State Thruway I-90 toll corridor through Erie; I-90 E is used only briefly near Buffalo. It also does not cross Grand Island or use the Lewiston–Queenston Bridge.</li>
+        <li>The QEW / McLeod Road / Parkside Road portion has no separate toll listed in this route’s toll calculation; the bridge toll is the Peace Bridge charge.</li>
+        <li>Google Maps currently shows a restricted-use/private-road advisory for this route. Confirm the complete route in live navigation before departure and follow signs if the route changes.</li>
+      </ul>
+      <p class="fineprint">Toll rates are tied to the cited 2026 PA Turnpike schedule and the Peace Bridge Authority’s posted rates. Vehicle class, trailer, toll-account rules, route changes, and future rate changes can alter the amount. Border wait, traffic, breaks, and fuel stops are not included in the 75 km/h calculation.</p>
+      <div class="source-list" aria-label="Official toll sources">
+        <a href="https://www.vdot.virginia.gov/projects/major-projects/66expresslanes/about/" target="_blank" rel="noopener">VDOT · I-66 Express Lanes timing and tolls ↗</a>
+        <a href="https://files.paturnpike.com/production/docs/default-source/resources/tolls/toll-schedule-2026/paturnpike_2026-toll-calculation-guide.pdf?sfvrsn=6b058053_5" target="_blank" rel="noopener">PA Turnpike · 2026 toll guide ↗</a>
+        <a href="https://www.peacebridge.com/auto-passenger-vehicles/ezpass/" target="_blank" rel="noopener">Peace Bridge Authority · passenger vehicle toll rates ↗</a>
+      </div>
+    </div>
+  </section>
+  <footer class="footer">Prepared for the road trip from 1600 Pennsylvania Avenue NW, Washington, DC, to 7246 Parkside Road, Niagara Falls, Ontario. Live routing and border conditions can change. Map and turn details captured from the current Google Maps route on October 4, 2026; reopen the live directions link for updated traffic, construction, restrictions, and arrival estimates.</footer>
+</main>
+</body>
+</html>

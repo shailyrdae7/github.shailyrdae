@@ -1,0 +1,1356 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17449a">
+<meta name="description" content="Editable November–December 2026 calendar with Outlook schedules, holidays, route planning, and the October 31 Table Rock House reservation.">
+<title>November–December 2026 · Editable Calendar · v006</title>
+<style>
+:root{color-scheme:light;--royal:#17449a;--deep:#102f70;--pale:#edf4ff;--pale2:#f6f9ff;--line:#c8d8f2;--white:#fff;--wash:#e6efff;--shadow:0 15px 42px rgba(16,47,112,.11)}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#e9f1ff 0,#f8fbff 360px,#f4f8ff 100%);color:var(--deep);font:16px/1.5 "Segoe UI",Arial,sans-serif}
+button,input,select,textarea{font:inherit;color:var(--deep)}
+option{color:var(--deep);background:#fff}
+button{border:1px solid var(--royal);background:#fff;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer;transition:background .15s,transform .15s}
+button:hover{background:var(--pale);transform:translateY(-1px)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #739ce2;outline-offset:2px}
+a{color:var(--royal);font-weight:800;text-underline-offset:3px}
+input::placeholder,textarea::placeholder{color:var(--deep);opacity:.68}
+.shell{max-width:1440px;margin:0 auto;padding:24px 22px 48px}
+.hero{position:relative;overflow:hidden;border:1px solid #c4d6f4;border-radius:27px;background:linear-gradient(130deg,#fff 0,#f0f6ff 58%,#e2edff 100%);box-shadow:var(--shadow);padding:clamp(24px,4vw,48px)}
+.closing-heading{margin-top:25px;border:1px solid #c4d6f4;border-radius:22px;background:linear-gradient(130deg,#fff 0,#f0f6ff 60%,#e2edff 100%);box-shadow:var(--shadow);padding:clamp(22px,4vw,42px)}
+.closing-heading h1{font-size:clamp(2rem,5vw,3.8rem)}
+.closing-heading .subtitle{margin-top:0}
+.hero:after{content:"";position:absolute;width:330px;height:330px;border:1px solid #d3e1f8;border-radius:50%;right:-110px;top:-145px;box-shadow:0 0 0 30px #f0f6ff,0 0 0 62px #f6f9ff}
+.hero>*{position:relative;z-index:1}
+.eyebrow{color:var(--royal);font-size:.76rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+h1{color:var(--royal);font-size:clamp(2.3rem,6vw,4.5rem);line-height:1;letter-spacing:-.045em;margin:12px 0 15px}
+h2{color:var(--royal);font-size:clamp(1.32rem,2.5vw,1.8rem);line-height:1.2;letter-spacing:-.025em;margin:0}
+h3{color:var(--royal);margin:0 0 6px;font-size:1.05rem}
+p{margin:.55em 0}
+.subtitle{max-width:900px;color:var(--deep);font-size:1.08rem}
+.route-strip{display:grid;grid-template-columns:1fr;align-items:center;gap:14px;max-width:940px;margin-top:24px}
+.endpoint{border:1px solid var(--line);background:#ffffffd9;border-radius:15px;padding:14px 17px}
+.endpoint small{display:block;color:var(--royal);font-weight:900;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase}
+.endpoint strong{display:block;color:var(--deep);font-size:1.05rem;margin-top:3px}
+.endpoint span{font-size:.82rem}
+
+
+
+.section{margin-top:25px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:0 2px 12px}
+.section-head p{color:var(--deep);font-size:.84rem;margin:0}
+.card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px 14px;padding:13px}.toolbar-main{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}.toolbar-search{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;justify-self:end}
+.toolbar-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.toolbar-actions button{padding:8px 10px;font-size:.8rem}
+.icon-button{min-width:44px;padding:9px 12px;font-size:1.05rem}
+.primary{background:#e6efff;color:var(--royal);border-color:var(--royal)}
+.primary:hover{background:#d7e6ff;color:var(--deep)}
+.toolbar select,.toolbar input{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 12px;min-height:44px}
+.search{width:min(290px,72vw)}
+.status{font-size:.78rem;color:var(--deep);font-weight:750;padding:0 5px}
+.calendar-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:13px;align-items:start}
+.calendar-card{padding:12px}
+.calendar-title{display:flex;align-items:center;justify-content:space-between;padding:6px 4px 13px;gap:10px}
+.calendar-title strong{color:var(--royal);font-size:1.45rem}
+.calendar-title span{color:var(--deep);font-size:.78rem}
+.calendar-grid{display:grid;grid-template-columns:44px repeat(7,minmax(0,1fr));gap:6px}
+.dow{text-align:center;padding:7px 2px;color:var(--royal);font-size:.7rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.dow.week-column{font-size:.62rem}
+.week-number{display:flex;align-items:flex-start;justify-content:center;min-height:135px;padding:11px 2px;border:1px solid #d4e0f4;border-radius:11px;background:#f1f6ff;color:var(--royal);font-size:.72rem;font-weight:900}
+.day{min-width:0;min-height:135px;border:1px solid #d4e0f4;border-radius:11px;background:#fff;padding:7px;overflow:hidden}
+.day.other-month{background:#f8faff;border-style:dashed}
+.day.selected{border:2px solid var(--royal);background:#f3f7ff}
+.day-top{display:flex;align-items:center;justify-content:space-between;gap:3px;margin-bottom:3px}
+.day-number{border:0;background:transparent;padding:1px 4px;color:var(--royal);font-weight:900;font-size:.88rem}
+.day-number:hover{background:var(--pale);transform:none}
+.add-mini{border:0;background:transparent;color:var(--royal);padding:0 4px;font-size:1rem}
+.event-chip{display:block;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;margin-top:4px;border:1px solid var(--line);border-left:4px solid var(--royal);border-radius:6px;background:#edf4ff;color:var(--deep);padding:4px 5px;font-size:.66rem;line-height:1.2;font-weight:800}
+.event-chip:hover{background:#dce9ff}
+.event-chip.holiday{border-color:#f4b5b5;border-left-color:#c62828;background:#fff0ef;color:var(--deep)}
+.event-chip.route{border-left-color:#102f70;background:#e6efff}
+.event-chip.schedule{border-left-color:#17449a}
+.event-chip.selected-chip{outline:2px solid #739ce2;outline-offset:1px}
+.day-count{font-size:.66rem;color:var(--deep);padding:4px 4px 0}
+.side-card{padding:16px;position:static;width:100%}
+.side-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding-bottom:11px;margin-bottom:10px}
+.side-head strong{color:var(--royal);font-size:1.04rem}
+.side-head small{display:block;color:var(--deep);font-size:.76rem}
+.day-event{padding:11px 0;border-bottom:1px solid #e0e9f8}
+.day-event:last-child{border-bottom:0}
+#dayEvents{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:8px}
+.day-event{padding:11px;border:1px solid #e0e9f8;border-radius:11px;background:#fff}
+.day-event-title{color:var(--royal);font-weight:900;cursor:pointer}
+.day-event-meta{font-size:.76rem;color:var(--deep);margin-top:3px}
+.small-actions{display:flex;gap:6px;margin-top:7px}
+.small-actions button{padding:5px 8px;font-size:.72rem}
+.empty-state{grid-column:1/-1;border:1px dashed var(--line);border-radius:12px;padding:17px 12px;color:var(--deep);font-size:.84rem;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:8px 15px;padding:12px 6px 2px;color:var(--deep);font-size:.75rem;font-weight:750}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:12px;height:12px;border:1px solid var(--royal);border-left:4px solid var(--royal);border-radius:3px;background:#edf4ff}
+.swatch.holiday{border-color:#f4b5b5;border-left-color:#c62828;background:#fff0ef}
+.swatch.route{border-left-color:#102f70;background:#e6efff}
+.search-results{padding:16px}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:9px}
+.result-card{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.result-card strong{display:block;color:var(--royal);cursor:pointer}
+.result-card small{display:block;color:var(--deep);margin-top:3px}
+.route-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.metric{padding:15px;background:linear-gradient(135deg,#f1f6ff,#fff)}
+.metric small{display:block;color:var(--royal);font-size:.66rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+.metric strong{display:block;color:var(--royal);font-size:1.35rem;margin:5px 0}
+.metric span{font-size:.77rem;color:var(--deep)}
+.route-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.route-item{padding:15px}
+.route-item .meta{font-size:.78rem;color:var(--deep);font-weight:800}
+.route-item p{font-size:.85rem}
+.route-item .small-actions{margin-top:9px}
+.note-card{padding:16px 18px;margin-top:11px;background:#f3f7ff}
+.note-card strong{color:var(--royal)}
+.note-card ul{margin:7px 0 0;padding-left:20px}
+.note-card li{margin:7px 0}
+.note-card li::marker{color:var(--royal)}
+details.source-details{padding:13px 16px}
+details.source-details summary{color:var(--royal);font-weight:900;cursor:pointer}
+.source-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.source-tag{padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--pale2);font-size:.78rem}
+.footer{padding:18px 4px 0;color:var(--deep);font-size:.78rem}
+dialog{width:min(700px,calc(100% - 24px));max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:0;background:#fff;color:var(--deep);box-shadow:0 24px 90px rgba(16,47,112,.24)}
+dialog::backdrop{background:rgba(16,47,112,.28)}
+.dialog-inner{padding:20px}
+.dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:15px}
+.dialog-head h2{font-size:1.35rem}
+.close-button{border:0;background:var(--pale);padding:5px 10px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.detail-field{border:1px solid #dbe6f7;border-radius:10px;padding:9px 11px;min-width:0}
+.detail-field.wide{grid-column:1/-1}
+.detail-field small{display:block;color:var(--royal);font-size:.64rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.detail-field div{color:var(--deep);font-size:.86rem;overflow-wrap:anywhere;white-space:pre-wrap}
+.detail-notice{border:1px solid #c3d6f4;border-radius:11px;background:#eff5ff;padding:11px 13px;margin:10px 0}
+.dialog-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:17px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field.wide{grid-column:1/-1}
+.field label{color:var(--royal);font-size:.76rem;font-weight:900}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;padding:9px 10px}
+.field textarea{min-height:98px;resize:vertical}
+.check-row{display:flex;align-items:center;gap:8px;color:var(--deep);font-size:.84rem}
+.check-row input{width:auto;accent-color:var(--royal)}
+.hidden{display:none!important}
+.danger{border-color:#6f8fc7}
+.modal-hint{color:var(--deep);font-size:.75rem}
+.conflict{border-left:4px solid var(--royal)}
+@media(max-width:1000px){.calendar-layout{grid-template-columns:1fr}.side-card{position:static}.day{min-height:110px}.route-summary{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.shell{padding:10px 8px 30px}.hero{padding:22px 18px;border-radius:19px}.route-strip{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr;align-items:stretch}.toolbar-search{grid-column:1;grid-row:1;justify-self:stretch;width:100%}.toolbar-main{grid-column:1;grid-row:2}.toolbar-group{width:100%}.toolbar-group>button{flex:1}.toolbar-actions button{flex:1 1 auto}.search{width:100%;flex:1}.calendar-card{padding:6px}.calendar-grid{gap:3px}.day{min-height:90px;padding:4px;border-radius:7px}.day-number{font-size:.76rem}.add-mini{font-size:.85rem}.event-chip{font-size:.55rem;padding:3px 4px}.dow{font-size:.57rem}.calendar-title{padding:7px 3px}.calendar-title strong{font-size:1.15rem}.route-list{grid-template-columns:1fr}.route-summary{gap:6px}.metric{padding:11px}.metric strong{font-size:1.1rem}.detail-grid,.form-grid{grid-template-columns:1fr}.detail-field.wide,.field.wide{grid-column:auto}}
+@media(max-width:650px){.week-number{min-height:90px;padding:8px 1px;font-size:.58rem}.dow.week-column{font-size:.5rem}}
+@media print{body{background:#fff;color:var(--deep)}.shell{max-width:none;padding:0}.hero,.card{box-shadow:none}.toolbar,.side-card,.legend,.small-actions,.add-mini,.footer button,dialog{display:none!important}.calendar-layout{display:block}.day{min-height:95px;break-inside:avoid}.section{break-inside:avoid}.route-list{grid-template-columns:1fr 1fr}.event-chip{color:var(--deep);-webkit-print-color-adjust:exact;print-color-adjust:exact}.search-results{display:none!important}a{color:var(--royal)}}
+
+.route51-panel{margin-top:12px;padding:18px;background:linear-gradient(135deg,#fff 0,#f2f7ff 100%);border-color:#17449a}
+.route51-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.route51-heading h3{font-size:1.25rem;margin:0;color:#102f70}
+.route51-kicker{margin:0 0 4px;color:#17449a;font-size:.72rem;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+.route51-badge{border:1px solid #17449a;border-radius:999px;background:#e6efff;color:#102f70;padding:5px 10px;font-size:.75rem;font-weight:900}
+.route51-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+.route51-metrics>div{border:1px solid #c8d8f2;border-radius:11px;background:#fff;padding:10px 12px}
+.route51-metrics small{display:block;color:#17449a;font-size:.65rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase}
+.route51-metrics strong{display:block;color:#102f70;font-size:.92rem;line-height:1.35;margin-top:4px}
+.route51-metrics span{display:block;font-size:.75rem;margin-top:3px}
+.route51-callout{border-left:5px solid #17449a;border-radius:8px;background:#eaf2ff;padding:11px 13px;color:#102f70;font-size:.86rem}
+.route51-source-note,.route51-foot{font-size:.76rem;color:#102f70}
+.route51-scroll{overflow:auto;max-width:100%;border:1px solid #c8d8f2;border-radius:11px;background:#fff}
+.route51-table{border-collapse:collapse;min-width:1750px;width:100%;font-size:.75rem;color:#102f70}
+.route51-table th{position:sticky;top:0;background:#e6efff;color:#17449a;text-align:left;font-size:.67rem;letter-spacing:.025em;z-index:1}
+.route51-table th,.route51-table td{border-bottom:1px solid #dce6f5;padding:7px 8px;vertical-align:top}
+.route51-table tbody tr:nth-child(even){background:#f7faff}
+.route51-table td small{display:block;color:#173a8c;font-size:.67rem;margin-top:2px;white-space:nowrap}
+.route51-table td:first-child{font-weight:900;color:#17449a;text-align:center}
+.route51-code{font-size:.86rem;color:#17449a}
+.route51-table a{white-space:normal}
+@media(max-width:850px){.route51-panel{padding:12px}.route51-metrics{grid-template-columns:1fr 1fr}.route51-heading{align-items:flex-start}}
+@media print{.route51-panel{break-inside:auto}.route51-scroll{overflow:visible}.route51-table{min-width:0;font-size:6.5pt}.route51-table th,.route51-table td{padding:3px}.route51-table td small{white-space:normal;font-size:5.5pt}}
+</style>
+</head>
+<body>
+<main class="shell">
+<section class="section" aria-label="Calendar controls">
+  <div class="card toolbar">
+    <div class="toolbar-main">
+      <div class="toolbar-group">
+        <button id="previousMonth" class="icon-button" type="button" aria-label="Previous month">‹</button>
+        <button id="returnNovember" type="button">November 2026</button>
+        <button id="nextMonth" class="icon-button" type="button" aria-label="Next month">›</button>
+        <button id="addEvent" class="primary" type="button">＋ Add event</button>
+      </div>
+      <div class="toolbar-group toolbar-actions">
+        <button id="printCalendar" type="button">Print / save PDF</button>
+        <button id="exportHtml" type="button">Save updated HTML</button>
+        <button id="exportJson" type="button">Export backup</button>
+        <button id="importJson" type="button">Import backup</button>
+        <input id="filePicker" class="hidden" type="file" accept=".json,application/json">
+      </div>
+      <span id="saveStatus" class="status" role="status" aria-live="polite">Saved locally just now.</span>
+    </div>
+    <div class="toolbar-search">
+      <input id="searchBox" class="search" type="search" aria-label="Search events" placeholder="Search title, notes, place, or calendar">
+      <select id="categoryFilter" aria-label="Filter event type">
+        <option value="all">All event types</option>
+        <option value="schedule">Outlook schedules</option>
+        <option value="holiday">Holidays</option>
+        <option value="route">Route plan</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><h2 id="monthHeading">November 2026</h2><p id="monthCount">10 events in this month</p></div>
+  <div class="calendar-layout">
+    <div class="card calendar-card">
+      <div class="calendar-title"><strong id="monthTitle">November 2026</strong><span>Choose a date or event for details</span></div>
+      <div id="calendarGrid" class="calendar-grid" role="grid" aria-label="Monthly calendar"><div class="dow week-column" role="columnheader">Wk</div><div class="dow" role="columnheader">Mon</div><div class="dow" role="columnheader">Tue</div><div class="dow" role="columnheader">Wed</div><div class="dow" role="columnheader">Thu</div><div class="dow" role="columnheader">Fri</div><div class="dow" role="columnheader">Sat</div><div class="dow" role="columnheader">Sun</div><div class="week-number" aria-label="ISO week 44" title="ISO week 44">44</div><div class="day other-month" role="gridcell" aria-label="Monday, October 26, 2026"><div class="day-top"><button type="button" class="day-number" title="Monday, October 26, 2026">26</button><button type="button" class="add-mini" title="Add an event on 2026-10-26">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Tuesday, October 27, 2026"><div class="day-top"><button type="button" class="day-number" title="Tuesday, October 27, 2026">27</button><button type="button" class="add-mini" title="Add an event on 2026-10-27">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Wednesday, October 28, 2026"><div class="day-top"><button type="button" class="day-number" title="Wednesday, October 28, 2026">28</button><button type="button" class="add-mini" title="Add an event on 2026-10-28">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Thursday, October 29, 2026"><div class="day-top"><button type="button" class="day-number" title="Thursday, October 29, 2026">29</button><button type="button" class="add-mini" title="Add an event on 2026-10-29">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Friday, October 30, 2026"><div class="day-top"><button type="button" class="day-number" title="Friday, October 30, 2026">30</button><button type="button" class="add-mini" title="Add an event on 2026-10-30">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Saturday, October 31, 2026"><div class="day-top"><button type="button" class="day-number" title="Saturday, October 31, 2026">31</button><button type="button" class="add-mini" title="Add an event on 2026-10-31">＋</button></div><button type="button" class="event-chip schedule" title="Table Rock House Restaurant — OpenTable Reservation · 11:00 a.m. – 3:00 p.m.">11:00 a.m. · Table Rock House Restaurant — OpenTable Reservation</button><button type="button" class="event-chip schedule" title="Pattie II-9-11 · 9:00 p.m. – 11:00 p.m.">9:00 p.m. · Pattie II-9-11</button></div><div class="day selected" role="gridcell" aria-label="Sunday, November 1, 2026"><div class="day-top"><button type="button" class="day-number" title="Sunday, November 1, 2026">1</button><button type="button" class="add-mini" title="Add an event on 2026-11-01">＋</button></div></div><div class="week-number" aria-label="ISO week 45" title="ISO week 45">45</div><div class="day" role="gridcell" aria-label="Monday, November 2, 2026"><div class="day-top"><button type="button" class="day-number" title="Monday, November 2, 2026">2</button><button type="button" class="add-mini" title="Add an event on 2026-11-02">＋</button></div></div><div class="day" role="gridcell" aria-label="Tuesday, November 3, 2026"><div class="day-top"><button type="button" class="day-number" title="Tuesday, November 3, 2026">3</button><button type="button" class="add-mini" title="Add an event on 2026-11-03">＋</button></div><button type="button" class="event-chip holiday" title="Election Day · All day">Election Day</button><button type="button" class="event-chip schedule" title="Petty I-LIFT · 9:00 a.m. – 11:00 a.m.">9:00 a.m. · Petty I-LIFT</button></div><div class="day" role="gridcell" aria-label="Wednesday, November 4, 2026"><div class="day-top"><button type="button" class="day-number" title="Wednesday, November 4, 2026">4</button><button type="button" class="add-mini" title="Add an event on 2026-11-04">＋</button></div></div><div class="day" role="gridcell" aria-label="Thursday, November 5, 2026"><div class="day-top"><button type="button" class="day-number" title="Thursday, November 5, 2026">5</button><button type="button" class="add-mini" title="Add an event on 2026-11-05">＋</button></div></div><div class="day" role="gridcell" aria-label="Friday, November 6, 2026"><div class="day-top"><button type="button" class="day-number" title="Friday, November 6, 2026">6</button><button type="button" class="add-mini" title="Add an event on 2026-11-06">＋</button></div><button type="button" class="event-chip schedule" title="CPF for Foreigners Appointment — Brazilian Consulate Toronto · 12:00 p.m. – 1:00 p.m.">12:00 p.m. · CPF for Foreigners Appointment — Brazilian Consulate Toronto</button></div><div class="day" role="gridcell" aria-label="Saturday, November 7, 2026"><div class="day-top"><button type="button" class="day-number" title="Saturday, November 7, 2026">7</button><button type="button" class="add-mini" title="Add an event on 2026-11-07">＋</button></div></div><div class="day" role="gridcell" aria-label="Sunday, November 8, 2026"><div class="day-top"><button type="button" class="day-number" title="Sunday, November 8, 2026">8</button><button type="button" class="add-mini" title="Add an event on 2026-11-08">＋</button></div></div><div class="week-number" aria-label="ISO week 46" title="ISO week 46">46</div><div class="day" role="gridcell" aria-label="Monday, November 9, 2026"><div class="day-top"><button type="button" class="day-number" title="Monday, November 9, 2026">9</button><button type="button" class="add-mini" title="Add an event on 2026-11-09">＋</button></div></div><div class="day" role="gridcell" aria-label="Tuesday, November 10, 2026"><div class="day-top"><button type="button" class="day-number" title="Tuesday, November 10, 2026">10</button><button type="button" class="add-mini" title="Add an event on 2026-11-10">＋</button></div></div><div class="day" role="gridcell" aria-label="Wednesday, November 11, 2026"><div class="day-top"><button type="button" class="day-number" title="Wednesday, November 11, 2026">11</button><button type="button" class="add-mini" title="Add an event on 2026-11-11">＋</button></div><button type="button" class="event-chip holiday" title="Remembrance Day · All day">Remembrance Day</button><button type="button" class="event-chip holiday" title="Veterans Day · All day">Veterans Day</button></div><div class="day" role="gridcell" aria-label="Thursday, November 12, 2026"><div class="day-top"><button type="button" class="day-number" title="Thursday, November 12, 2026">12</button><button type="button" class="add-mini" title="Add an event on 2026-11-12">＋</button></div></div><div class="day" role="gridcell" aria-label="Friday, November 13, 2026"><div class="day-top"><button type="button" class="day-number" title="Friday, November 13, 2026">13</button><button type="button" class="add-mini" title="Add an event on 2026-11-13">＋</button></div><button type="button" class="event-chip schedule" title="DJX&amp;YM 10-10+% · All day">DJX&amp;YM 10-10+%</button></div><div class="day" role="gridcell" aria-label="Saturday, November 14, 2026"><div class="day-top"><button type="button" class="day-number" title="Saturday, November 14, 2026">14</button><button type="button" class="add-mini" title="Add an event on 2026-11-14">＋</button></div></div><div class="day" role="gridcell" aria-label="Sunday, November 15, 2026"><div class="day-top"><button type="button" class="day-number" title="Sunday, November 15, 2026">15</button><button type="button" class="add-mini" title="Add an event on 2026-11-15">＋</button></div></div><div class="week-number" aria-label="ISO week 47" title="ISO week 47">47</div><div class="day" role="gridcell" aria-label="Monday, November 16, 2026"><div class="day-top"><button type="button" class="day-number" title="Monday, November 16, 2026">16</button><button type="button" class="add-mini" title="Add an event on 2026-11-16">＋</button></div><button type="button" class="event-chip schedule" title="IBOVESPA 50% EXCEPTIONS  · 9:15 a.m. – 5:00 p.m.">9:15 a.m. · IBOVESPA 50% EXCEPTIONS </button></div><div class="day" role="gridcell" aria-label="Tuesday, November 17, 2026"><div class="day-top"><button type="button" class="day-number" title="Tuesday, November 17, 2026">17</button><button type="button" class="add-mini" title="Add an event on 2026-11-17">＋</button></div><button type="button" class="event-chip schedule" title="IBOVESPA 50% EXCEPTIONS  · 9:15 a.m. – 5:00 p.m.">9:15 a.m. · IBOVESPA 50% EXCEPTIONS </button></div><div class="day" role="gridcell" aria-label="Wednesday, November 18, 2026"><div class="day-top"><button type="button" class="day-number" title="Wednesday, November 18, 2026">18</button><button type="button" class="add-mini" title="Add an event on 2026-11-18">＋</button></div><button type="button" class="event-chip schedule" title="IBOVESPA 50% EXCEPTIONS  · 9:15 a.m. – 5:00 p.m.">9:15 a.m. · IBOVESPA 50% EXCEPTIONS </button></div><div class="day" role="gridcell" aria-label="Thursday, November 19, 2026"><div class="day-top"><button type="button" class="day-number" title="Thursday, November 19, 2026">19</button><button type="button" class="add-mini" title="Add an event on 2026-11-19">＋</button></div></div><div class="day" role="gridcell" aria-label="Friday, November 20, 2026"><div class="day-top"><button type="button" class="day-number" title="Friday, November 20, 2026">20</button><button type="button" class="add-mini" title="Add an event on 2026-11-20">＋</button></div><button type="button" class="event-chip schedule" title="DJX&amp;YM-50% EXCEPTION  · All day">DJX&amp;YM-50% EXCEPTION </button></div><div class="day" role="gridcell" aria-label="Saturday, November 21, 2026"><div class="day-top"><button type="button" class="day-number" title="Saturday, November 21, 2026">21</button><button type="button" class="add-mini" title="Add an event on 2026-11-21">＋</button></div></div><div class="day" role="gridcell" aria-label="Sunday, November 22, 2026"><div class="day-top"><button type="button" class="day-number" title="Sunday, November 22, 2026">22</button><button type="button" class="add-mini" title="Add an event on 2026-11-22">＋</button></div></div><div class="week-number" aria-label="ISO week 48" title="ISO week 48">48</div><div class="day" role="gridcell" aria-label="Monday, November 23, 2026"><div class="day-top"><button type="button" class="day-number" title="Monday, November 23, 2026">23</button><button type="button" class="add-mini" title="Add an event on 2026-11-23">＋</button></div></div><div class="day" role="gridcell" aria-label="Tuesday, November 24, 2026"><div class="day-top"><button type="button" class="day-number" title="Tuesday, November 24, 2026">24</button><button type="button" class="add-mini" title="Add an event on 2026-11-24">＋</button></div></div><div class="day" role="gridcell" aria-label="Wednesday, November 25, 2026"><div class="day-top"><button type="button" class="day-number" title="Wednesday, November 25, 2026">25</button><button type="button" class="add-mini" title="Add an event on 2026-11-25">＋</button></div></div><div class="day" role="gridcell" aria-label="Thursday, November 26, 2026"><div class="day-top"><button type="button" class="day-number" title="Thursday, November 26, 2026">26</button><button type="button" class="add-mini" title="Add an event on 2026-11-26">＋</button></div><button type="button" class="event-chip holiday" title="Thanksgiving Day · All day">Thanksgiving Day</button></div><div class="day" role="gridcell" aria-label="Friday, November 27, 2026"><div class="day-top"><button type="button" class="day-number" title="Friday, November 27, 2026">27</button><button type="button" class="add-mini" title="Add an event on 2026-11-27">＋</button></div><button type="button" class="event-chip holiday" title="Day After Thanksgiving Day · All day">Day After Thanksgiving Day</button></div><div class="day" role="gridcell" aria-label="Saturday, November 28, 2026"><div class="day-top"><button type="button" class="day-number" title="Saturday, November 28, 2026">28</button><button type="button" class="add-mini" title="Add an event on 2026-11-28">＋</button></div></div><div class="day" role="gridcell" aria-label="Sunday, November 29, 2026"><div class="day-top"><button type="button" class="day-number" title="Sunday, November 29, 2026">29</button><button type="button" class="add-mini" title="Add an event on 2026-11-29">＋</button></div></div><div class="week-number" aria-label="ISO week 49" title="ISO week 49">49</div><div class="day" role="gridcell" aria-label="Monday, November 30, 2026"><div class="day-top"><button type="button" class="day-number" title="Monday, November 30, 2026">30</button><button type="button" class="add-mini" title="Add an event on 2026-11-30">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Tuesday, December 1, 2026"><div class="day-top"><button type="button" class="day-number" title="Tuesday, December 1, 2026">1</button><button type="button" class="add-mini" title="Add an event on 2026-12-01">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Wednesday, December 2, 2026"><div class="day-top"><button type="button" class="day-number" title="Wednesday, December 2, 2026">2</button><button type="button" class="add-mini" title="Add an event on 2026-12-02">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Thursday, December 3, 2026"><div class="day-top"><button type="button" class="day-number" title="Thursday, December 3, 2026">3</button><button type="button" class="add-mini" title="Add an event on 2026-12-03">＋</button></div></div><div class="day other-month" role="gridcell" aria-label="Friday, December 4, 2026"><div class="day-top"><button type="button" class="day-number" title="Friday, December 4, 2026">4</button><button type="button" class="add-mini" title="Add an event on 2026-12-04">＋</button></div><button type="button" class="event-chip route" title="888 · Vancouver–Toronto–Ottawa rail-tour model · 12:00 p.m. – 10:58 a.m.">12:00 p.m. · 888 · Vancouver–Toronto–Ottawa rail-tour model</button></div><div class="day other-month" role="gridcell" aria-label="Saturday, December 5, 2026"><div class="day-top"><button type="button" class="day-number" title="Saturday, December 5, 2026">5</button><button type="button" class="add-mini" title="Add an event on 2026-12-05">＋</button></div><button type="button" class="event-chip route" title="888 · Vancouver–Toronto–Ottawa rail-tour model · 12:00 p.m. – 10:58 a.m.">12:00 p.m. · 888 · Vancouver–Toronto–Ottawa rail-tour model</button></div><div class="day other-month" role="gridcell" aria-label="Sunday, December 6, 2026"><div class="day-top"><button type="button" class="day-number" title="Sunday, December 6, 2026">6</button><button type="button" class="add-mini" title="Add an event on 2026-12-06">＋</button></div><button type="button" class="event-chip route" title="888 · Vancouver–Toronto–Ottawa rail-tour model · 12:00 p.m. – 10:58 a.m.">12:00 p.m. · 888 · Vancouver–Toronto–Ottawa rail-tour model</button></div></div>
+      <div class="legend" aria-label="Calendar legend">
+        <span><i class="swatch"></i> Outlook schedule</span>
+        <span><i class="swatch holiday"></i> Holiday</span>
+        <span><i class="swatch route"></i> Route model / planning window</span>
+      </div>
+    </div>
+    <aside class="card side-card" aria-live="polite">
+      <div class="side-head"><div><strong id="selectedHeading">Sunday, November 1, 2026</strong><small id="selectedCount">0 events</small></div><button id="addSelectedDate" type="button" aria-label="Add event to selected day">＋</button></div>
+      <div id="dayEvents"><div class="empty-state">No matching event on this date. Add a schedule or use the search and filters.</div></div>
+    </aside>
+  </div>
+</section>
+
+<section id="searchSection" class="section hidden" aria-live="polite">
+  <div class="section-head"><h2>Search results</h2><p id="resultCount"></p></div>
+  <div class="card search-results"><div id="searchResults" class="results-grid"></div></div>
+</section>
+
+<section class="section" aria-labelledby="routeHeading">
+  <div class="section-head"><h2 id="routeHeading">Route plan carried forward</h2><p>Route estimates remain editable like any other event.</p></div>
+  <div class="route-summary">
+    <div class="card metric"><small>888 rail-tour model</small><strong>5 d 22 h 58 min</strong><span>4,827.1 km at 70 km/h plus 888 five-minute halts</span></div>
+    <div class="card metric"><small>03 air-route model</small><strong>20 h 37 min</strong><span>17,760 km; source-file stated estimate</span></div>
+    <div class="card metric"><small>51 air-route model</small><strong>110 h 55 min</strong><span>73,687 km plus 29 h 30 min defined ground time</span></div>
+    <div class="card metric"><small>02 road-route model</small><strong>8 h 38 min</strong><span>402 mi / about 647 km at 75 km/h</span></div>
+  </div>
+  <div id="routeList" class="route-list"><article class="card route-item"><h3>888 · Vancouver–Toronto–Ottawa rail-tour model</h3><div class="meta">Dec 4, 2026 – Dec 10, 2026 · 12:00 p.m. – 10:58 a.m. · Source schedule clock</div><p>Monday noon start. Modelled 4,827.1 km at 70 km/h plus 888 five-minute crossing halts: 5 days 22 hours 58 minutes. Schematic crossing-connector estimate, not a surveyed railway timetable. The source schedule uses one elapsed-time clock without timezone conversion.</p><button type="button">Edit route event</button></article><article class="card route-item"><h3>Ottawa → IAG positioning window</h3><div class="meta">Dec 12, 2026 – Dec 16, 2026 · 10:58 a.m. – 3:49 a.m. · Source schedule clock</div><p>No Ottawa-to-IAG route or duration was supplied. Up to 88 hours 51 minutes is reserved for relocation and a pre-departure buffer. Be at IAG by Saturday, December 19 at 3:49 AM. The reserved time is not a calculated travel estimate.</p><button type="button">Edit route event</button></article><article class="card route-item"><h3>03 · IAG → LLHB → PUS</h3><div class="meta">Dec 17, 2026 – Dec 18, 2026 · 3:49 a.m. – 12:26 a.m. · Source schedule clock</div><p>The file gives a 20 hours 37 minutes estimate over 17,760 km. Its two displayed leg estimates add to 20 hours 38 minutes, a one-minute rounding difference. No additional LLHB turnaround is specified. This is a route-file estimate, not a confirmed flight schedule.</p><button type="button">Edit route event</button></article><article class="card route-item"><h3>51 · PUS → PNW</h3><div class="meta">Dec 19, 2026 – Dec 23, 2026 · 12:26 a.m. – 3:21 p.m. · Source schedule clock</div><p>The newer v002 calendar starts this stage on the calendar day after route 03 finishes. Recomputed from 51 airport points: 73,687 km of rounded great-circle legs at 905 km/h plus 29 hours 30 minutes of defined ground time, for 110 hours 55 minutes total. This is a route-file model, not an airline timetable or confirmation of airport, airspace, landing, or operating permissions.</p><button type="button">Edit route event</button></article><article class="card route-item"><h3>02 · PNW → 7246 Parkside Road</h3><div class="meta">Thursday, December 24, 2026 · 3:21 p.m. – 11:59 p.m. · Source schedule clock</div><p>402 miles (about 647 km) at a constant 75 km/h gives an 8 hours 38 minutes moving-time estimate. v002 places departure at 3:21 PM and arrival by 11:59 PM on December 26. Traffic, border queues, breaks, and road changes are excluded. The stated speed is a calculation rate, not a uniform legal speed limit. The route file's internal destination is 7246 Parkside Road; its filename says 7240NF.</p><button type="button">Edit route event</button></article></div>
+  <div class="route51-panel card" aria-labelledby="route51Heading">
+    <div class="route51-heading">
+      <div><p class="route51-kicker">December 21–25 · Route 51 calendar entry</p><h3 id="route51Heading">PUS → PNW · Complete 51-point route model</h3></div>
+      <span class="route51-badge">Planner model · not a booking</span>
+    </div>
+    <div class="route51-metrics">
+      <div><small>Window on calendar</small><strong>Dec 21, 12:26 AM → Dec 25, 3:21 PM</strong></div>
+      <div><small>Route points</small><strong>51 total · 50 airfields + final waypoint</strong></div>
+      <div><small>Source route distance</small><strong>73,687 km · rounded great-circle legs</strong></div>
+      <div><small>Model elapsed time</small><strong>110 h 55 min</strong><span>81 h 25 min in-air estimate + 29 h 30 min defined halts</span></div>
+    </div>
+    <p class="route51-callout"><strong>Route-model details only.</strong> The attached v014 file models these legs at a constant 905 km/h and applies the halt durations shown below. Arrival and departure times align those elapsed offsets to the existing Dec 21, 12:26 AM calendar start; they are one continuous planner clock, not airport-local times or airline timetables. The source contains no confirmed airline bookings, flight numbers, aircraft, ticket references, or operating clearances. Stop 51 is the custom White House address waypoint at 1600 Pennsylvania Avenue NW, not an airport.</p>
+    <p class="route51-source-note">Source field note: airport names, codes, coordinates, runway/bearing, elevation, and QNH below are copied from fields embedded in the supplied route file. “Not embedded” means the value is absent from that saved file; its separate route viewer attempts an online OurAirports autofill when available. No missing values have been guessed. ELEV has no unit stated in the source table, and the listed QNH values are not live weather observations.</p>
+    <div class="route51-scroll" tabindex="0" aria-label="Scrollable 51-stop route detail table">
+      <table class="route51-table">
+        <thead><tr><th>#</th><th>Country / region</th><th>City / destination</th><th>Route code</th><th>Airport / waypoint name</th><th>Model arrival</th><th>Halt</th><th>Model departure</th><th>Inbound leg</th><th>Cumulative route</th><th>Runways / bearings</th><th>Elevation</th><th>QNH</th><th>ARP lat, lon</th></tr></thead>
+        <tbody>
+        <tr>
+          <td class="route51-num">1</td>
+          <td>S. Korea<small>ASIA-1</small></td>
+          <td>Busan<small>IATA route code</small></td>
+          <td><strong class="route51-code">PUS</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.airport.co.kr/gimhae/index.do" target="_blank" rel="noopener">Gimhae Intl</a></td>
+          <td>Dec 21 · 12:26 AM<small>calendar clock · +0:00 elapsed</small></td>
+          <td>0 min</td>
+          <td>Dec 21 · 12:26 AM</td>
+          <td>— start<small></small></td>
+          <td>0 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 10</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>35.1796, 128.9388</td>
+        </tr>
+        <tr>
+          <td class="route51-num">2</td>
+          <td>China<small>ASIA-2</small></td>
+          <td>Beijing<small>IATA route code</small></td>
+          <td><strong class="route51-code">PEK</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/ZBAA/" target="_blank" rel="noopener">Beijing Capital International Airport</a></td>
+          <td>Dec 21 · 1:46 AM<small>calendar clock · +1:20 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 21 · 2:16 AM</td>
+          <td>1,215 km<small>inbound leg</small></td>
+          <td>1,215 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 116</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>40.0801, 116.5850</td>
+        </tr>
+        <tr>
+          <td class="route51-num">3</td>
+          <td>Mongolia<small>ASIA-3</small></td>
+          <td>Ulaanbaatar<small>IATA route code</small></td>
+          <td><strong class="route51-code">UBN</strong><small>ICAO ZMCK</small></td>
+          <td><a href="https://en.ulaanbaatar-airport.mn/" target="_blank" rel="noopener">Chinggis Khaan International Airport</a></td>
+          <td>Dec 21 · 3:32 AM<small>calendar clock · +3:06 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 21 · 4:02 AM</td>
+          <td>1,148 km<small>inbound leg</small></td>
+          <td>2,363 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 4485</td>
+          <td>Not embedded</td>
+          <td>47.6469, 106.8198</td>
+        </tr>
+        <tr>
+          <td class="route51-num">4</td>
+          <td>Macau<small>ASIA-4</small></td>
+          <td>Macau<small>IATA route code</small></td>
+          <td><strong class="route51-code">MFM</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/VMMC/" target="_blank" rel="noopener">Macau International Airport</a></td>
+          <td>Dec 21 · 7:14 AM<small>calendar clock · +6:48 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 21 · 7:44 AM</td>
+          <td>2,899 km<small>inbound leg</small></td>
+          <td>5,262 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 20</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>22.1496, 113.5920</td>
+        </tr>
+        <tr>
+          <td class="route51-num">5</td>
+          <td>Taiwan<small>ASIA-5</small></td>
+          <td>Kaohsiung<small>IATA route code</small></td>
+          <td><strong class="route51-code">KHH</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/RCKH/" target="_blank" rel="noopener">Kaohsiung International Airport</a></td>
+          <td>Dec 21 · 8:31 AM<small>calendar clock · +8:05 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 21 · 9:01 AM</td>
+          <td>697 km<small>inbound leg</small></td>
+          <td>5,959 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 31</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>22.5771, 120.3500</td>
+        </tr>
+        <tr>
+          <td class="route51-num">6</td>
+          <td>Philippines<small>ASIA-6</small></td>
+          <td>Manila<small>IATA route code</small></td>
+          <td><strong class="route51-code">MNL</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://caap.gov.ph/" target="_blank" rel="noopener">Manila Intl</a></td>
+          <td>Dec 21 · 10:00 AM<small>calendar clock · +9:34 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 21 · 10:30 AM</td>
+          <td>900 km<small>inbound leg</small></td>
+          <td>6,859 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 75</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>14.5086, 121.0200</td>
+        </tr>
+        <tr>
+          <td class="route51-num">7</td>
+          <td>Australia<small>ASIA-7</small></td>
+          <td>Melbourne<small>IATA route code</small></td>
+          <td><strong class="route51-code">MEL</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.melbourneairport.com.au/" target="_blank" rel="noopener">Tullamarine</a></td>
+          <td>Dec 21 · 5:29 PM<small>calendar clock · +17:03 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 21 · 5:59 PM</td>
+          <td>6,314 km<small>inbound leg</small></td>
+          <td>13,173 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 434</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>-37.6733, 144.8433</td>
+        </tr>
+        <tr>
+          <td class="route51-num">8</td>
+          <td>Indonesia<small>ASIA-8</small></td>
+          <td>Yogyakarta<small>IATA route code</small></td>
+          <td><strong class="route51-code">YIA</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://yogyakarta-airport.co.id/en" target="_blank" rel="noopener">Yogyakarta Intl</a></td>
+          <td>Dec 21 · 11:18 PM<small>calendar clock · +22:52 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 21 · 11:48 PM</td>
+          <td>4,813 km<small>inbound leg</small></td>
+          <td>17,986 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 18</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>-7.9022, 110.0575</td>
+        </tr>
+        <tr>
+          <td class="route51-num">9</td>
+          <td>Singapore<small>ASIA-9</small></td>
+          <td>Singapore<small>IATA route code</small></td>
+          <td><strong class="route51-code">SIN</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.changiairport.com/" target="_blank" rel="noopener">Changi Intl</a></td>
+          <td>Dec 22 · 1:10 AM<small>calendar clock · +24:44 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 1:40 AM</td>
+          <td>1,231 km<small>inbound leg</small></td>
+          <td>19,217 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 22</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>1.3644, 103.9915</td>
+        </tr>
+        <tr>
+          <td class="route51-num">10</td>
+          <td>Malaysia<small>ASIA-10</small></td>
+          <td>Kuching<small>IATA route code</small></td>
+          <td><strong class="route51-code">KCH</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://airports.malaysiaairports.com.my/kuching" target="_blank" rel="noopener">Kuching International</a></td>
+          <td>Dec 22 · 2:26 AM<small>calendar clock · +26:00 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 2:56 AM</td>
+          <td>707 km<small>inbound leg</small></td>
+          <td>19,924 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 89</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>1.4847, 110.3469</td>
+        </tr>
+        <tr>
+          <td class="route51-num">11</td>
+          <td>Brunei<small>ASIA-11</small></td>
+          <td>Bandar Seri Begawan<small>IATA route code</small></td>
+          <td><strong class="route51-code">BWN</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/WBSB/" target="_blank" rel="noopener">Brunei International Airport</a></td>
+          <td>Dec 22 · 3:39 AM<small>calendar clock · +27:13 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 4:09 AM</td>
+          <td>638 km<small>inbound leg</small></td>
+          <td>20,562 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 73</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>4.9442, 114.9280</td>
+        </tr>
+        <tr>
+          <td class="route51-num">12</td>
+          <td>Cambodia<small>ASIA-12</small></td>
+          <td>Sihanoukville<small>IATA route code</small></td>
+          <td><strong class="route51-code">KOS</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/VDSV/" target="_blank" rel="noopener">Sihanouk International Airport</a></td>
+          <td>Dec 22 · 5:41 AM<small>calendar clock · +29:15 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 6:11 AM</td>
+          <td>1,392 km<small>inbound leg</small></td>
+          <td>21,954 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 33</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>10.5706, 103.6321</td>
+        </tr>
+        <tr>
+          <td class="route51-num">13</td>
+          <td>Vietnam<small>ASIA-13</small></td>
+          <td>Da Lat<small>IATA route code</small></td>
+          <td><strong class="route51-code">DLI</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/VVDL/" target="_blank" rel="noopener">Lien Khuong Intl</a></td>
+          <td>Dec 22 · 6:46 AM<small>calendar clock · +30:20 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 7:16 AM</td>
+          <td>534 km<small>inbound leg</small></td>
+          <td>22,488 km</td>
+          <td>09/27 · 090/270°</td>
+          <td>Source ELEV 3156</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>11.7506, 108.3736</td>
+        </tr>
+        <tr>
+          <td class="route51-num">14</td>
+          <td>Laos<small>ASIA-14</small></td>
+          <td>Vientiane<small>IATA route code</small></td>
+          <td><strong class="route51-code">VTE</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/VLVT/" target="_blank" rel="noopener">Wattay International Airport</a></td>
+          <td>Dec 22 · 8:18 AM<small>calendar clock · +31:52 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 8:48 AM</td>
+          <td>933 km<small>inbound leg</small></td>
+          <td>23,421 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 564</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>17.9851, 102.5667</td>
+        </tr>
+        <tr>
+          <td class="route51-num">15</td>
+          <td>Thailand<small>ASIA-15</small></td>
+          <td>Chiang Mai<small>IATA route code</small></td>
+          <td><strong class="route51-code">CNX</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://chiangmai.airportthai.co.th/" target="_blank" rel="noopener">Chiang Mai Intl</a></td>
+          <td>Dec 22 · 9:14 AM<small>calendar clock · +32:48 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 9:44 AM</td>
+          <td>390 km<small>inbound leg</small></td>
+          <td>23,811 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 1036</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>18.7668, 98.9626</td>
+        </tr>
+        <tr>
+          <td class="route51-num">16</td>
+          <td>U.A.E.<small>ME-1</small></td>
+          <td>Al Ain<small>IATA route code</small></td>
+          <td><strong class="route51-code">AAN</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.adairports.ae/english/airports/al-ain-international-airport" target="_blank" rel="noopener">Al Ain Intl</a></td>
+          <td>Dec 22 · 2:43 PM<small>calendar clock · +38:17 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 3:13 PM</td>
+          <td>4,509 km<small>inbound leg</small></td>
+          <td>28,320 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 866</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>24.2617, 55.6092</td>
+        </tr>
+        <tr>
+          <td class="route51-num">17</td>
+          <td>Qatar<small>ME-2</small></td>
+          <td>Al Udeid<small>ICAO route code</small></td>
+          <td><strong class="route51-code">OTBH</strong><small>ICAO code</small></td>
+          <td><a href="https://ourairports.com/airports/OTBH/" target="_blank" rel="noopener">Al Udeid Air Base</a></td>
+          <td>Dec 22 · 3:43 PM<small>calendar clock · +39:17 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 4:13 PM</td>
+          <td>444 km<small>inbound leg</small></td>
+          <td>28,764 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 130</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>25.1173, 51.3150</td>
+        </tr>
+        <tr>
+          <td class="route51-num">18</td>
+          <td>Iran<small>ME-3</small></td>
+          <td>Mahshahr<small>IATA route code</small></td>
+          <td><strong class="route51-code">MRX</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/OIAM/" target="_blank" rel="noopener">Mahshahr Airport</a></td>
+          <td>Dec 22 · 4:55 PM<small>calendar clock · +40:29 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 5:25 PM</td>
+          <td>641 km<small>inbound leg</small></td>
+          <td>29,405 km</td>
+          <td>14/32 · 140/320°</td>
+          <td>Source ELEV 2</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>30.5562, 49.1519</td>
+        </tr>
+        <tr>
+          <td class="route51-num">19</td>
+          <td>Kuwait<small>ME-4</small></td>
+          <td>Kuwait City<small>IATA route code</small></td>
+          <td><strong class="route51-code">KWI</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/OKKK/" target="_blank" rel="noopener">Kuwait International Airport</a></td>
+          <td>Dec 22 · 5:37 PM<small>calendar clock · +41:11 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 6:07 PM</td>
+          <td>187 km<small>inbound leg</small></td>
+          <td>29,592 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 206</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>29.2245, 47.9698</td>
+        </tr>
+        <tr>
+          <td class="route51-num">20</td>
+          <td>Saudi Arabia<small>ME-5</small></td>
+          <td>Medina<small>IATA route code</small></td>
+          <td><strong class="route51-code">MED</strong><small>ICAO OEMA</small></td>
+          <td><a href="http://www.tibahairports.com" target="_blank" rel="noopener">Prince Mohammad bin Abdulaziz Intl</a></td>
+          <td>Dec 22 · 7:12 PM<small>calendar clock · +42:46 elapsed</small></td>
+          <td>3 h</td>
+          <td>Dec 22 · 10:12 PM</td>
+          <td>970 km<small>inbound leg</small></td>
+          <td>30,562 km</td>
+          <td>17/35, 18/36 · 170/350, 180/360°</td>
+          <td>Source ELEV 2151</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>24.5534, 39.7051</td>
+        </tr>
+        <tr>
+          <td class="route51-num">21</td>
+          <td>Egypt<small>ME-6</small></td>
+          <td>Aswan<small>IATA route code</small></td>
+          <td><strong class="route51-code">ASW</strong><small>ICAO not embedded</small></td>
+          <td><a href="http://www.eac-airports.com/" target="_blank" rel="noopener">Aswan Intl</a></td>
+          <td>Dec 22 · 10:58 PM<small>calendar clock · +46:32 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 22 · 11:28 PM</td>
+          <td>701 km<small>inbound leg</small></td>
+          <td>31,263 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 662</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>23.9644, 32.8197</td>
+        </tr>
+        <tr>
+          <td class="route51-num">22</td>
+          <td>Israel<small>ME-7</small></td>
+          <td>Beersheba<small>ICAO route code</small></td>
+          <td><strong class="route51-code">LLHB</strong><small>ICAO code</small></td>
+          <td><a href="https://www.gov.il/BlobFolder/guide/aip/he/TRANSPORT%203.pdf" target="_blank" rel="noopener">Hatzerim Air Base</a></td>
+          <td>Dec 23 · 12:23 AM<small>calendar clock · +47:57 elapsed</small></td>
+          <td>3 h</td>
+          <td>Dec 23 · 3:23 AM</td>
+          <td>829 km<small>inbound leg</small></td>
+          <td>32,092 km</td>
+          <td>10L/28R, 10R/28L, 15/33 · 102/282, 102/282, 143/323°</td>
+          <td>Source ELEV 738</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>31.2433, 34.6550</td>
+        </tr>
+        <tr>
+          <td class="route51-num">23</td>
+          <td>Syria<small>ME-8</small></td>
+          <td>Deir ez-Zor<small>IATA route code</small></td>
+          <td><strong class="route51-code">DEZ</strong><small>ICAO not embedded</small></td>
+          <td><a href="http://www.scca.sy/" target="_blank" rel="noopener">Deir ez-Zor</a></td>
+          <td>Dec 23 · 4:08 AM<small>calendar clock · +51:42 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 4:38 AM</td>
+          <td>683 km<small>inbound leg</small></td>
+          <td>32,775 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 700</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>35.2917, 40.1794</td>
+        </tr>
+        <tr>
+          <td class="route51-num">24</td>
+          <td>Georgia<small>NONEU-1</small></td>
+          <td>Batumi<small>IATA route code</small></td>
+          <td><strong class="route51-code">BUS</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.batumiairport.com/" target="_blank" rel="noopener">Batumi Intl (Alexander Kartveli)</a></td>
+          <td>Dec 23 · 5:26 AM<small>calendar clock · +53:00 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 5:56 AM</td>
+          <td>713 km<small>inbound leg</small></td>
+          <td>33,488 km</td>
+          <td>12/30 · 120/300°</td>
+          <td>Source ELEV 37</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>41.6103, 41.5994</td>
+        </tr>
+        <tr>
+          <td class="route51-num">25</td>
+          <td>Cyprus<small>EU-1</small></td>
+          <td>Geçitkale<small>IATA route code</small></td>
+          <td><strong class="route51-code">GEC</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/LCGK/" target="_blank" rel="noopener">Lefkoniko Airport / Geçitkale Air Base</a></td>
+          <td>Dec 23 · 7:01 AM<small>calendar clock · +54:35 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 7:31 AM</td>
+          <td>986 km<small>inbound leg</small></td>
+          <td>34,474 km</td>
+          <td>09/27 · 090/270°</td>
+          <td>Source ELEV 146</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>35.2359, 33.7201</td>
+        </tr>
+        <tr>
+          <td class="route51-num">26</td>
+          <td>Türkiye<small>NONEU-2</small></td>
+          <td>Antalya<small>IATA route code</small></td>
+          <td><strong class="route51-code">AYT</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.antalya-airport.aero/" target="_blank" rel="noopener">Antalya</a></td>
+          <td>Dec 23 · 7:52 AM<small>calendar clock · +55:26 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 8:22 AM</td>
+          <td>321 km<small>inbound leg</small></td>
+          <td>34,795 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 177</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>36.8987, 30.8005</td>
+        </tr>
+        <tr>
+          <td class="route51-num">27</td>
+          <td>Greece<small>EU-2</small></td>
+          <td>Athens<small>IATA route code</small></td>
+          <td><strong class="route51-code">ATH</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.aia.gr/" target="_blank" rel="noopener">Athens Intl (Eleftherios Venizelos)</a></td>
+          <td>Dec 23 · 9:03 AM<small>calendar clock · +56:37 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 9:33 AM</td>
+          <td>616 km<small>inbound leg</small></td>
+          <td>35,411 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 308</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>37.9364, 23.9445</td>
+        </tr>
+        <tr>
+          <td class="route51-num">28</td>
+          <td>Albania<small>NONEU-3</small></td>
+          <td>Vlorë<small>IATA route code</small></td>
+          <td><strong class="route51-code">VLO</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://vlora-airport.com/" target="_blank" rel="noopener">Vlora International Airport</a></td>
+          <td>Dec 23 · 10:06 AM<small>calendar clock · +57:40 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 10:36 AM</td>
+          <td>489 km<small>inbound leg</small></td>
+          <td>35,900 km</td>
+          <td>12/30 · 120/300°</td>
+          <td>Source ELEV 8</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>40.6054, 19.4261</td>
+        </tr>
+        <tr>
+          <td class="route51-num">29</td>
+          <td>N. Macedonia<small>NONEU-4</small></td>
+          <td>Skopje<small>IATA route code</small></td>
+          <td><strong class="route51-code">SKP</strong><small>ICAO not embedded</small></td>
+          <td><a href="http://skp.airports.com.mk/" target="_blank" rel="noopener">Skopje International Airport</a></td>
+          <td>Dec 23 · 10:51 AM<small>calendar clock · +58:25 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 11:21 AM</td>
+          <td>237 km<small>inbound leg</small></td>
+          <td>36,137 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 781</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>41.9616, 21.6214</td>
+        </tr>
+        <tr>
+          <td class="route51-num">30</td>
+          <td>Bosnia and Herzegovina<small>NONEU-5</small></td>
+          <td>Sarajevo<small>IATA route code</small></td>
+          <td><strong class="route51-code">SJJ</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/LQSA/" target="_blank" rel="noopener">Sarajevo International Airport</a></td>
+          <td>Dec 23 · 11:44 AM<small>calendar clock · +59:18 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 12:14 PM</td>
+          <td>339 km<small>inbound leg</small></td>
+          <td>36,476 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 1708</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>43.8246, 18.3315</td>
+        </tr>
+        <tr>
+          <td class="route51-num">31</td>
+          <td>Slovakia<small>EU-3</small></td>
+          <td>Bratislava<small>IATA route code</small></td>
+          <td><strong class="route51-code">BTS</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.bts.aero/en/" target="_blank" rel="noopener">M. R. Štefánik Airport</a></td>
+          <td>Dec 23 · 12:46 PM<small>calendar clock · +60:20 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 1:16 PM</td>
+          <td>491 km<small>inbound leg</small></td>
+          <td>36,967 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 436</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>48.1702, 17.2127</td>
+        </tr>
+        <tr>
+          <td class="route51-num">32</td>
+          <td>Poland<small>EU-4</small></td>
+          <td>Rzeszów<small>IATA route code</small></td>
+          <td><strong class="route51-code">RZE</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://rzeszowairport.pl/en" target="_blank" rel="noopener">Jasionka</a></td>
+          <td>Dec 23 · 1:44 PM<small>calendar clock · +61:18 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 2:14 PM</td>
+          <td>411 km<small>inbound leg</small></td>
+          <td>37,378 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 693</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>50.1100, 22.0189</td>
+        </tr>
+        <tr>
+          <td class="route51-num">33</td>
+          <td>Moldova<small>NONEU-6</small></td>
+          <td>Chișinău<small>IATA route code</small></td>
+          <td><strong class="route51-code">RMO</strong><small>ICAO LUKK</small></td>
+          <td><a href="https://airport.md/" target="_blank" rel="noopener">Chișinău International Airport</a></td>
+          <td>Dec 23 · 2:55 PM<small>calendar clock · +62:29 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 3:25 PM</td>
+          <td>620 km<small>inbound leg</small></td>
+          <td>37,998 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 399</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>46.9277, 28.9317</td>
+        </tr>
+        <tr>
+          <td class="route51-num">34</td>
+          <td>Ukraine<small>NONEU-7</small></td>
+          <td>Kyiv<small>IATA route code</small></td>
+          <td><strong class="route51-code">KBP</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://kbp.aero/en/" target="_blank" rel="noopener">Boryspil</a></td>
+          <td>Dec 23 · 3:52 PM<small>calendar clock · +63:26 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 4:22 PM</td>
+          <td>406 km<small>inbound leg</small></td>
+          <td>38,404 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 427</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>50.3447, 30.8933</td>
+        </tr>
+        <tr>
+          <td class="route51-num">35</td>
+          <td>Finland<small>EU-5</small></td>
+          <td>Helsinki<small>IATA route code</small></td>
+          <td><strong class="route51-code">HEL</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.finavia.fi/en/airports/helsinki-airport" target="_blank" rel="noopener">Vantaa</a></td>
+          <td>Dec 23 · 5:39 PM<small>calendar clock · +65:13 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 6:09 PM</td>
+          <td>1,170 km<small>inbound leg</small></td>
+          <td>39,574 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 179</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>60.3184, 24.9633</td>
+        </tr>
+        <tr>
+          <td class="route51-num">36</td>
+          <td>Sweden<small>UNKNOWN-1</small></td>
+          <td>Västerås<small>IATA route code</small></td>
+          <td><strong class="route51-code">VST</strong><small>ICAO ESOW</small></td>
+          <td><a href="https://vasterasairport.se/" target="_blank" rel="noopener">Stockholm Västerås Airport</a></td>
+          <td>Dec 23 · 6:40 PM<small>calendar clock · +66:14 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 7:10 PM</td>
+          <td>470 km<small>inbound leg</small></td>
+          <td>40,044 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 21</td>
+          <td>Not embedded</td>
+          <td>59.5894, 16.6336</td>
+        </tr>
+        <tr>
+          <td class="route51-num">37</td>
+          <td>Norway<small>UNKNOWN-2</small></td>
+          <td>Stavanger<small>IATA route code</small></td>
+          <td><strong class="route51-code">SVG</strong><small>ICAO ENZV</small></td>
+          <td><a href="https://www.avinor.no/en/airport/stavanger/" target="_blank" rel="noopener">Stavanger Airport, Sola</a></td>
+          <td>Dec 23 · 7:52 PM<small>calendar clock · +67:26 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 8:22 PM</td>
+          <td>630 km<small>inbound leg</small></td>
+          <td>40,674 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 29</td>
+          <td>Not embedded</td>
+          <td>58.8767, 5.6378</td>
+        </tr>
+        <tr>
+          <td class="route51-num">38</td>
+          <td>Belgium<small>UNKNOWN-3</small></td>
+          <td>Ostend<small>IATA route code</small></td>
+          <td><strong class="route51-code">OST</strong><small>ICAO EBOS</small></td>
+          <td><a href="https://www.ostendbruges-airport.com/" target="_blank" rel="noopener">Ostend-Bruges International Airport</a></td>
+          <td>Dec 23 · 9:20 PM<small>calendar clock · +68:54 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 9:50 PM</td>
+          <td>871 km<small>inbound leg</small></td>
+          <td>41,545 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 13</td>
+          <td>Not embedded</td>
+          <td>51.1998, 2.8747</td>
+        </tr>
+        <tr>
+          <td class="route51-num">39</td>
+          <td>Switzerland<small>NONEU-8</small></td>
+          <td>Basel<small>IATA route code</small></td>
+          <td><strong class="route51-code">BSL</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.euroairport.com/en/" target="_blank" rel="noopener">EuroAirport Basel–Mulhouse–Freiburg</a></td>
+          <td>Dec 23 · 10:25 PM<small>calendar clock · +69:59 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 23 · 10:55 PM</td>
+          <td>524 km<small>inbound leg</small></td>
+          <td>42,069 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 885</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>47.5896, 7.5299</td>
+        </tr>
+        <tr>
+          <td class="route51-num">40</td>
+          <td>Italy<small>EU-6</small></td>
+          <td>Decimomannu<small>ICAO route code</small></td>
+          <td><strong class="route51-code">LIED</strong><small>ICAO code</small></td>
+          <td><a href="https://en.wikipedia.org/wiki/Decimomannu_Air_Base" target="_blank" rel="noopener">Decimomannu Air Base</a></td>
+          <td>Dec 23 · 11:56 PM<small>calendar clock · +71:30 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 24 · 12:26 AM</td>
+          <td>923 km<small>inbound leg</small></td>
+          <td>42,992 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 100</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>39.3542, 8.9722</td>
+        </tr>
+        <tr>
+          <td class="route51-num">41</td>
+          <td>Portugal<small>EU-7</small></td>
+          <td>Beja<small>IATA route code</small></td>
+          <td><strong class="route51-code">BYJ</strong><small>ICAO LPBJ</small></td>
+          <td><a href="https://ais.nav.pt/wp-content/uploads/AIS_Files/eAIP_Current/eAIP_Online/eAIP/html/eAIP/LP-AD-2.LPBJ-en-PT.html" target="_blank" rel="noopener">Beja Airport</a></td>
+          <td>Dec 24 · 2:03 AM<small>calendar clock · +73:37 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 24 · 2:33 AM</td>
+          <td>1,471 km<small>inbound leg</small></td>
+          <td>44,463 km</td>
+          <td>01L/19R · 006/186°</td>
+          <td>Source ELEV 636</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>38.0789, -7.9325</td>
+        </tr>
+        <tr>
+          <td class="route51-num">42</td>
+          <td>Brazil<small>AMERICAS-1</small></td>
+          <td>Aracaju<small>IATA route code</small></td>
+          <td><strong class="route51-code">AJU</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/SBAR/" target="_blank" rel="noopener">Santa Maria Airport</a></td>
+          <td>Dec 24 · 9:27 AM<small>calendar clock · +81:01 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 24 · 9:57 AM</td>
+          <td>6,240 km<small>inbound leg</small></td>
+          <td>50,703 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 23</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>-10.9840, -37.0703</td>
+        </tr>
+        <tr>
+          <td class="route51-num">43</td>
+          <td>Argentina<small>AMERICAS-2</small></td>
+          <td>Ushuaia<small>IATA route code</small></td>
+          <td><strong class="route51-code">USH</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.aeropuertoushuaia.com/" target="_blank" rel="noopener">Malvinas</a></td>
+          <td>Dec 24 · 4:08 PM<small>calendar clock · +87:42 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 24 · 4:38 PM</td>
+          <td>5,590 km<small>inbound leg</small></td>
+          <td>56,293 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 102</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>-54.8433, -68.2958</td>
+        </tr>
+        <tr>
+          <td class="route51-num">44</td>
+          <td>Chile<small>AMERICAS-3</small></td>
+          <td>Antofagasta<small>IATA route code</small></td>
+          <td><strong class="route51-code">ANF</strong><small>ICAO SCFA</small></td>
+          <td><a href="https://aipchile.dgac.gob.cl/designador/SCFA" target="_blank" rel="noopener">Andrés Sabella Airport</a></td>
+          <td>Dec 24 · 8:29 PM<small>calendar clock · +92:03 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 24 · 8:59 PM</td>
+          <td>3,496 km<small>inbound leg</small></td>
+          <td>59,789 km</td>
+          <td>01/19 · 011/191°</td>
+          <td>Source ELEV 455</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>-23.4444, -70.4450</td>
+        </tr>
+        <tr>
+          <td class="route51-num">45</td>
+          <td>Peru<small>AMERICAS-4</small></td>
+          <td>La Joya<small>ICAO route code</small></td>
+          <td><strong class="route51-code">SPLC</strong><small>ICAO code</small></td>
+          <td><a href="https://eaip-peru.corpac.gob.pe/" target="_blank" rel="noopener">Mariano Melgar Airport / La Joya Air Base</a></td>
+          <td>Dec 24 · 9:49 PM<small>calendar clock · +93:23 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 24 · 10:19 PM</td>
+          <td>755 km<small>inbound leg</small></td>
+          <td>60,544 km</td>
+          <td>17/35 · 170/350°</td>
+          <td>Source ELEV 3890</td>
+          <td>Not embedded</td>
+          <td>-16.7915, -71.8866</td>
+        </tr>
+        <tr>
+          <td class="route51-num">46</td>
+          <td>Ecuador<small>AMERICAS-5</small></td>
+          <td>Quito<small>IATA route code</small></td>
+          <td><strong class="route51-code">UIO</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/SEQM/" target="_blank" rel="noopener">Mariscal Sucre International Airport</a></td>
+          <td>Dec 25 · 12:31 AM<small>calendar clock · +96:05 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 25 · 1:01 AM</td>
+          <td>1,984 km<small>inbound leg</small></td>
+          <td>62,528 km</td>
+          <td>18/36 · 180/360°</td>
+          <td>Source ELEV 7841</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>-0.1292, -78.3575</td>
+        </tr>
+        <tr>
+          <td class="route51-num">47</td>
+          <td>Venezuela<small>AMERICAS-6</small></td>
+          <td>Maracaibo<small>IATA route code</small></td>
+          <td><strong class="route51-code">MAR</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/SVMC/" target="_blank" rel="noopener">La Chinita International Airport</a></td>
+          <td>Dec 25 · 2:34 AM<small>calendar clock · +98:08 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 25 · 3:04 AM</td>
+          <td>1,396 km<small>inbound leg</small></td>
+          <td>63,924 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 72</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>10.5582, -71.7279</td>
+        </tr>
+        <tr>
+          <td class="route51-num">48</td>
+          <td>El Salvador<small>AMERICAS-7</small></td>
+          <td>San Salvador<small>IATA route code</small></td>
+          <td><strong class="route51-code">SAL</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/MSLP/" target="_blank" rel="noopener">Monseñor Óscar Arnulfo Romero International Airport</a></td>
+          <td>Dec 25 · 5:10 AM<small>calendar clock · +100:44 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 25 · 5:40 AM</td>
+          <td>1,911 km<small>inbound leg</small></td>
+          <td>65,835 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 101</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>13.4445, -89.0558</td>
+        </tr>
+        <tr>
+          <td class="route51-num">49</td>
+          <td>Mexico<small>AMERICAS-8</small></td>
+          <td>Cancún<small>IATA route code</small></td>
+          <td><strong class="route51-code">CUN</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://ourairports.com/airports/MMUN/" target="_blank" rel="noopener">Cancún International Airport</a></td>
+          <td>Dec 25 · 6:38 AM<small>calendar clock · +102:12 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 25 · 7:08 AM</td>
+          <td>876 km<small>inbound leg</small></td>
+          <td>66,711 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 22</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>21.0394, -86.8743</td>
+        </tr>
+        <tr>
+          <td class="route51-num">50</td>
+          <td>USA<small>AMERICAS-9</small></td>
+          <td>Ontario<small>IATA route code</small></td>
+          <td><strong class="route51-code">ONT</strong><small>ICAO not embedded</small></td>
+          <td><a href="https://www.flyontario.com/" target="_blank" rel="noopener">Ontario Intl</a></td>
+          <td>Dec 25 · 10:50 AM<small>calendar clock · +106:24 elapsed</small></td>
+          <td>0 h 30 min</td>
+          <td>Dec 25 · 11:20 AM</td>
+          <td>3,339 km<small>inbound leg</small></td>
+          <td>70,050 km</td>
+          <td>Not embedded</td>
+          <td>Source ELEV 944</td>
+          <td>1013.25 hPa / 29.92 inHg</td>
+          <td>34.0560, -117.6010</td>
+        </tr>
+        <tr>
+          <td class="route51-num">51</td>
+          <td>USA<small>AMERICAS-10</small></td>
+          <td>Wash. DC<small>Washington, D.C. destination</small></td>
+          <td><strong class="route51-code">PNW</strong><small>No airport code</small></td>
+          <td><a href="https://www.loc.gov/pictures/item/dc0402/" target="_blank" rel="noopener">1600 Pennsylvania Avenue NW (White House) — custom waypoint</a></td>
+          <td>Dec 25 · 3:21 PM<small>calendar clock · +110:55 elapsed</small></td>
+          <td>0 min</td>
+          <td>Dec 25 · 3:21 PM</td>
+          <td>3,637 km<small>inbound leg</small></td>
+          <td>73,687 km</td>
+          <td>N/A — no runway</td>
+          <td>Not embedded</td>
+          <td>Not embedded</td>
+          <td>38.8977, -77.0365</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="route51-foot">The source ground-time rules give PUS and final PNW 0 min, Hatzerim Air Base (LLHB) and Medina (MED) 3 h each, and 30 min at every other stop before the final waypoint. Distances use the source’s 6,371 km great-circle calculation rounded to whole kilometres. The original route viewer’s displayed test clock begins Mon 27 Oct 2025 at noon; the calendar times above reuse its elapsed route model anchored to the existing Dec 21 start.</p>
+  </div>
+  <div class="card note-card">
+    <strong>Planning notes</strong>
+    <ul>
+      <li>The newer v002 draft places route 03 on Dec 19–20, route 51 on Dec 21–25, and the road route on Dec 26, reaching the destination by 11:59 PM. Those are the dates used here.</li>
+      <li>The earlier v001 draft instead connected routes 03 and 51 continuously and targeted arrival on Dec 24. Its compatible 48-hour Ottawa rest and the unmodelled Ottawa-to-IAG positioning window are retained in the calendar above. The 88 h 51 min window is reserved time, not a travel estimate.</li>
+      <li>The 888 route ends in Ottawa, while route 03 starts at IAG in Niagara Falls, New York. The source drafts do not supply that transfer route. Route estimates are not confirmed rail, airline, airport, or road schedules.</li>
+      <li>The 02 route content identifies 7246 Parkside Road, Niagara Falls, Ontario, while its source filename says “7240NF.” This calendar follows the 7246 destination.</li>
+    </ul>
+  </div>
+  <details class="card source-details">
+    <summary>Calendar source files and Outlook access notes</summary>
+    <div class="source-list">
+      <span class="source-tag">2026-Calendar·Nov–Dec_v001.html</span>
+      <span class="source-tag">2026-Calendar·Nov–Dec_v002.html</span>
+      <span class="source-tag">Screenshot (3529).png · Outlook month view</span>
+      <span class="source-tag">Outlook: Calendar · Canada Holidays · United States holidays</span>
+      <span class="source-tag">Birthday calendar: no events in this date range</span>
+    </div>
+    <p class="modal-hint">Collected from the connected Personal Outlook mailbox on October 5, 2026. Timed Outlook events are shown in the mailbox’s Eastern time; all-day dates are kept as listed. A second linked Outlook mailbox was unavailable, and the listed Coursera shared calendar could not be read because Outlook returned an invalid calendar ID. Changes made here are saved only in this browser and do not sync back to Outlook.</p>
+  </details>
+</section>
+
+<header class="hero" aria-label="Route sequence summary">
+  <div class="route-strip">
+    <div class="endpoint"><small>Route sequence</small><strong>Vancouver → IAG → PUS → PNW → 7246</strong><span>7246 Parkside Road · Niagara Falls, Ontario · v002 target: Dec 26</span></div>
+  </div>
+</header>
+
+<footer class="footer">Use “Save updated HTML” to create a portable copy of your current edits. “Export backup” downloads the event data as JSON. Printing uses your browser’s Print or Save as PDF dialog.</footer>
+<section class="closing-heading" aria-label="Calendar overview">
+  <div class="eyebrow">Your editable calendar · Eastern time for Outlook entries</div>
+  <h1>November + December<br>2026</h1>
+  <p class="subtitle">A live, editable two-month calendar combining your Outlook schedules and holiday calendars with the route plan carried forward from the uploaded drafts. Start with November, move into December, or navigate to any date you add later.</p>
+</section>
+</main>
+
+<dialog id="detailsDialog">
+  <div class="dialog-inner">
+    <div class="dialog-head"><div><h2 id="detailTitle">02 · PNW → 7246 Parkside Road</h2><div id="detailWhen" class="modal-hint">Saturday, December 26, 2026 · 3:21 p.m. – 11:59 p.m. · Source schedule clock</div></div><button class="close-button" data-close="detailsDialog" type="button" aria-label="Close">×</button></div>
+    <div id="detailConflict" class="detail-notice conflict hidden"></div>
+    <div id="detailFields" class="detail-grid"><div class="detail-field"><small>Type</small><div>route</div></div><div class="detail-field"><small>Calendar / source</small><div>Route plan · v002</div></div><div class="detail-field"><small>Location</small><div>PNW → 7246 Parkside Road, Niagara Falls, Ontario</div></div><div class="detail-field"><small>Availability / status</small><div>model</div></div><div class="detail-field"><small>Reminder</small><div>Off</div></div><div class="detail-field"><small>Privacy</small><div>Not specified</div></div><div class="detail-field"><small>Importance</small><div>Not specified</div></div><div class="detail-field"><small>Response</small><div>Not specified</div></div><div class="detail-field wide"><small>Invitees / attendees</small><div>Not provided</div></div><div class="detail-field wide"><small>Notes and full event details</small><div>402 miles (about 647 km) at a constant 75 km/h gives an 8 hours 38 minutes moving-time estimate. v002 places departure at 3:21 PM and arrival by 11:59 PM on December 26. Traffic, border queues, breaks, and road changes are excluded. The stated speed is a calculation rate, not a uniform legal speed limit. The route file's internal destination is 7246 Parkside Road; its filename says 7240NF.</div></div></div>
+    <div class="dialog-actions"><button id="editEvent" type="button">Edit event</button><button id="deleteEvent" class="danger" type="button">Delete event</button><button data-close="detailsDialog" type="button">Close</button></div>
+  </div>
+</dialog>
+
+<dialog id="editDialog">
+  <form id="eventForm" class="dialog-inner">
+    <div class="dialog-head"><div><h2 id="formHeading">Edit event</h2><div class="modal-hint">Your edits stay in this browser unless you export an updated copy.</div></div><button class="close-button" data-close="editDialog" type="button" aria-label="Close">×</button></div>
+    <input id="eventId" type="hidden" value="route-02">
+    <div class="form-grid">
+      <div class="field wide"><label for="eventTitle">Title</label><input id="eventTitle" required="" maxlength="180"></div>
+      <div class="field"><label for="eventCategory">Type</label><select id="eventCategory"><option value="schedule">Schedule</option><option value="holiday">Holiday</option><option value="route">Route plan</option></select></div>
+      <div class="field"><label for="eventCalendar">Calendar / source</label><input id="eventCalendar" maxlength="100"></div>
+      <div class="field"><label for="startDate">Start date</label><input id="startDate" type="date" required=""></div>
+      <div class="field"><label for="endDate">End date</label><input id="endDate" type="date" required=""></div>
+      <label class="check-row field wide"><input id="allDay" type="checkbox"> All-day event</label>
+      <div class="field timed-field"><label for="startTime">Start time</label><input id="startTime" type="time"></div>
+      <div class="field timed-field"><label for="endTime">End time</label><input id="endTime" type="time"></div>
+      <div class="field wide"><label for="eventLocation">Location</label><input id="eventLocation" maxlength="240"></div>
+      <div class="field wide"><label for="eventDescription">Notes and details</label><textarea id="eventDescription"></textarea></div>
+      <div class="field"><label for="eventShowAs">Show as / status</label><select id="eventShowAs"><option value="">Not specified</option><option>busy</option><option>free</option><option>tentative</option><option>workingElsewhere</option><option>model</option><option>planned</option><option>unmodelled window</option></select></div>
+      <div class="field"><label for="eventPrivacy">Privacy</label><select id="eventPrivacy"><option value="">Not specified</option><option>normal</option><option>private</option><option>confidential</option></select></div>
+      <label class="check-row field"><input id="reminderOn" type="checkbox"> Reminder on</label>
+      <div class="field"><label for="reminderMinutes">Reminder minutes before</label><input id="reminderMinutes" type="number" min="0" max="525600" value="15"></div>
+      <div class="field wide"><label for="attendees">Attendees (one name or email per line)</label><textarea id="attendees" placeholder="Optional"></textarea></div>
+    </div>
+    <p class="modal-hint">Outlook imports are local copies. Editing or deleting one here will not change the original Outlook event.</p>
+    <div class="dialog-actions"><button data-close="editDialog" type="button">Cancel</button><button class="primary" type="submit">Save event</button></div>
+  </form>
+</dialog>
+
+<script id="calendar-seed" type="application/json">[{"id":"manual-table-rock-2026-10-31","source":"manual","calendar":"OpenTable reservation","category":"schedule","title":"Table Rock House Restaurant — OpenTable Reservation","startDate":"2026-10-31","endDate":"2026-10-31","startTime":"11:00","endTime":"15:00","allDay":false,"location":"Table Rock House Restaurant, 6650 Niagara Parkway, Niagara Falls, ON L2E 6T2","description":"CONFIRMED OpenTable reservation.\nCalendar block requested: 11:00 AM–3:00 PM.\nActual restaurant reservation: 11:45 AM–1:45 PM.\nTable for 4. Confirmation #: 2110294345.\nPhone: (905) 354-3631.\nReservation name: Shailesh Gupta.\nDining note: no guaranteed window table.\nParking: paid parking is available in Falls Parking Lot A across from Table Rock Centre.\nOpenTable: reservation confirmed; contact the restaurant if plans change.","bodyContentType":"text","reminderOn":false,"reminderMinutes":15,"showAs":"busy","importance":"normal","sensitivity":"normal","cancelled":false,"type":"singleInstance","response":"confirmed","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"","icalUid":"","sourceEventId":"","editedLocally":true},{"id":"United States holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9YAAAA=","source":"outlook","calendar":"United States holidays","category":"holiday","title":"Election Day","startDate":"2026-11-03","endDate":"2026-11-03","startTime":"","endTime":"","allDay":true,"location":"United States","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":15,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9YAAAA%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E0080000000000000000000000000000000000000000310000007643616C2D5569640100000037303566643366632D313962342D343536322D613065652D35396237663238363065383600","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9YAAAA=","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9YAAAA=","subject":"Election Day","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9YAAAA%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-03T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-04T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"United States"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E0080000000000000000000000000000000000000000310000007643616C2D5569640100000037303566643366632D313962342D343536322D613065652D35396237663238363065383600","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9YAAAA%3D&exvsurl=1&path=/calendar/item","display_title":"Election Day"}},{"id":"Calendar|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpgAAAA==","source":"outlook","calendar":"Calendar","category":"schedule","title":"Petty I-LIFT","startDate":"2026-11-03","endDate":"2026-11-03","startTime":"09:00","endTime":"11:00","allDay":false,"location":"","description":"","bodyContentType":"html","reminderOn":true,"reminderMinutes":15,"showAs":"busy","importance":"normal","sensitivity":"private","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpgAAAA%3D%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00800000000C290C6A92D54DD010000000000000000100000006947A1075B883C47B41BDE45B5DD9ACC","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpgAAAA==","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpgAAAA==","subject":"Petty I-LIFT","body":{"contentType":"html","content":""},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpgAAAA%3D%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-03T14:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-03T16:00:00.0000000","timeZone":"UTC"},"is_all_day":false,"show_as":"busy","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"private","location":{"displayName":""},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00800000000C290C6A92D54DD010000000000000000100000006947A1075B883C47B41BDE45B5DD9ACC","cancelled_occurrences":null,"is_reminder_on":true,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpgAAAA%3D%3D&exvsurl=1&path=/calendar/item","display_title":"Petty I-LIFT"}},{"id":"Calendar|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpAAAAA==","source":"outlook","calendar":"Calendar","category":"schedule","title":"CPF for Foreigners Appointment — Brazilian Consulate Toronto","startDate":"2026-11-06","endDate":"2026-11-06","startTime":"12:00","endTime":"13:00","allDay":false,"location":"CG Toronto - Sala 1109 - Agendamento de todos os serviços","description":"CPF for Foreigners appointment confirmed by e-Consular.  \n  \nDate: Tuesday, October 27, 2026  \nTime: 9:45 AM  \nLocation: CG Toronto - Sala 1109 - Agendamento de todos os serviços  \n  \nBring all documents uploaded in the e-Consular application. Key documents\npreviously confirmed: original photo ID; original Canadian Citizenship\nCertificate; printed FCPF form. Review the current service instructions in\ne-Consular before the appointment.  \n  \nE-Consular: \u003chttps://ec-toronto.itamaraty.gov.br>\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":0,"showAs":"busy","importance":"normal","sensitivity":"normal","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpAAAAA%3D%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00800000000000000000000000000000000000000002F0000007643616C2D556964010000006370662D746F726F6E746F2D323032363130323754303934353030406F70656E616900","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpAAAAA==","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpAAAAA==","subject":"CPF for Foreigners Appointment — Brazilian Consulate Toronto","body":{"contentType":"html","content":"CPF for Foreigners appointment confirmed by e-Consular.  \n  \nDate: Tuesday, October 27, 2026  \nTime: 9:45 AM  \nLocation: CG Toronto - Sala 1109 - Agendamento de todos os serviços  \n  \nBring all documents uploaded in the e-Consular application. Key documents\npreviously confirmed: original photo ID; original Canadian Citizenship\nCertificate; printed FCPF form. Review the current service instructions in\ne-Consular before the appointment.  \n  \nE-Consular: \u003chttps://ec-toronto.itamaraty.gov.br>\n\n"},"bodyPreview":"CPF for Foreigners appointment confirmed by e-Consular.\r\n\r\nDate: Tuesday, October 27, 2026\r\nTime: 9:45 AM\r\nLocation: CG Toronto - Sala 1109 - Agendamento de todos os serviços\r\n\r\nBring all documents uploaded in the e-Consular application. Key documents pre","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpAAAAA%3D%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-06T17:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-06T18:00:00.0000000","timeZone":"UTC"},"is_all_day":false,"show_as":"busy","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"CG Toronto - Sala 1109 - Agendamento de todos os serviços"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00800000000000000000000000000000000000000002F0000007643616C2D556964010000006370662D746F726F6E746F2D323032363130323754303934353030406F70656E616900","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":0,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJWO4VpAAAAA%3D%3D&exvsurl=1&path=/calendar/item","display_title":"CPF for Foreigners Appointment — Brazilian Consulate Toronto"}},{"id":"Canada Holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8-hrqtgABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTPwAAABA=","source":"outlook","calendar":"Canada Holidays","category":"holiday","title":"Remembrance Day","startDate":"2026-11-11","endDate":"2026-11-11","startTime":"","endTime":"","allDay":true,"location":"Canada","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":0,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"occurrence","response":"notResponded","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTPwAAAA==","originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8%2FhrqtgABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTPwAAABA%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00807EA0B0B00000000000000000000000000000000310000007643616C2D5569640100000031316666353962322D666261302D346664372D396234322D32373534376534353836396200","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8-hrqtgABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTPwAAABA=","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8-hrqtgABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTPwAAABA=","subject":"Remembrance Day","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8%2FhrqtgABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTPwAAABA%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-11T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-12T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"occurrence","response_status":{"response":"notResponded"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"Canada"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTPwAAAA==","original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00807EA0B0B00000000000000000000000000000000310000007643616C2D5569640100000031316666353962322D666261302D346664372D396234322D32373534376534353836396200","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":0,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8%2FhrqtgABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTPwAAABA%3D&exvsurl=1&path=/calendar/item","display_title":"Remembrance Day"}},{"id":"United States holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8-hrqtgABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3UAAAAQ","source":"outlook","calendar":"United States holidays","category":"holiday","title":"Veterans Day","startDate":"2026-11-11","endDate":"2026-11-11","startTime":"","endTime":"","allDay":true,"location":"United States","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":15,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"occurrence","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3UAAAA=","originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8%2FhrqtgABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3UAAAAQ&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00807EA0B0B7088ACBF0710C80100000000000000001000000076956827B63C5A4E8C5C2ECDF069DE42","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8-hrqtgABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3UAAAAQ","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8-hrqtgABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3UAAAAQ","subject":"Veterans Day","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8%2FhrqtgABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3UAAAAQ&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-11T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-12T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"occurrence","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"United States"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3UAAAA=","original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00807EA0B0B7088ACBF0710C80100000000000000001000000076956827B63C5A4E8C5C2ECDF069DE42","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN8%2FhrqtgABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3UAAAAQ&exvsurl=1&path=/calendar/item","display_title":"Veterans Day"}},{"id":"Calendar|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOOwAAAA==","source":"outlook","calendar":"Calendar","category":"schedule","title":"DJX&YM 10-10+%","startDate":"2026-11-13","endDate":"2026-11-13","startTime":"","endTime":"","allDay":true,"location":"","description":"","bodyContentType":"html","reminderOn":true,"reminderMinutes":420,"showAs":"free","importance":"normal","sensitivity":"private","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOOwAAAA%3D%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00800000000612AA3977544DD01000000000000000010000000DD118D23ACF84C4E8DFE907C9F184494","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOOwAAAA==","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOOwAAAA==","subject":"DJX&YM 10-10+%","body":{"contentType":"html","content":""},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOOwAAAA%3D%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-13T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-14T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"private","location":{"displayName":""},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00800000000612AA3977544DD01000000000000000010000000DD118D23ACF84C4E8DFE907C9F184494","cancelled_occurrences":null,"is_reminder_on":true,"reminder_minutes_before_start":420,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOOwAAAA%3D%3D&exvsurl=1&path=/calendar/item","display_title":"DJX&YM 10-10+%"}},{"id":"Calendar|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQAAAAA==","source":"outlook","calendar":"Calendar","category":"schedule","title":"IBOVESPA 50% EXCEPTIONS ","startDate":"2026-11-16","endDate":"2026-11-18","startTime":"09:15","endTime":"17:00","allDay":false,"location":"","description":"180000 to 1970000 @ 10% open -up sustain to an hour and free fall for 12th,\n13th & 14th to close around 990000\n\n","bodyContentType":"html","reminderOn":true,"reminderMinutes":15,"showAs":"busy","importance":"normal","sensitivity":"private","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQAAAAA%3D%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E0080000000027C7D74F7744DD010000000000000000100000007226574B965DA34CACA2A254057DD320","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQAAAAA==","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQAAAAA==","subject":"IBOVESPA 50% EXCEPTIONS ","body":{"contentType":"html","content":"180000 to 1970000 @ 10% open -up sustain to an hour and free fall for 12th,\n13th & 14th to close around 990000\n\n"},"bodyPreview":"180000 to 1970000 @ 10% open -up sustain to an hour and free fall for 12th, 13th & 14th to close around 990000","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQAAAAA%3D%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-16T14:15:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-18T22:00:00.0000000","timeZone":"UTC"},"is_all_day":false,"show_as":"busy","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"private","location":{"displayName":""},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E0080000000027C7D74F7744DD010000000000000000100000007226574B965DA34CACA2A254057DD320","cancelled_occurrences":null,"is_reminder_on":true,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQAAAAA%3D%3D&exvsurl=1&path=/calendar/item","display_title":"IBOVESPA 50% EXCEPTIONS "}},{"id":"Calendar|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQgAAAA==","source":"outlook","calendar":"Calendar","category":"schedule","title":"DJX&YM-50% EXCEPTION ","startDate":"2026-11-20","endDate":"2026-11-20","startTime":"","endTime":"","allDay":true,"location":"","description":"","bodyContentType":"html","reminderOn":true,"reminderMinutes":0,"showAs":"free","importance":"normal","sensitivity":"private","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQgAAAA%3D%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00800000000177A8CEF7A44DD010000000000000000100000004CBADC5A57DE5B46872B3D48127939FC","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQgAAAA==","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQgAAAA==","subject":"DJX&YM-50% EXCEPTION ","body":{"contentType":"html","content":""},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQgAAAA%3D%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-20T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-21T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"private","location":{"displayName":""},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00800000000177A8CEF7A44DD010000000000000000100000004CBADC5A57DE5B46872B3D48127939FC","cancelled_occurrences":null,"is_reminder_on":true,"reminder_minutes_before_start":0,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgENAAAAtrIqtEMD7kShLUD1UE1rugAJS6fOQgAAAA%3D%3D&exvsurl=1&path=/calendar/item","display_title":"DJX&YM-50% EXCEPTION "}},{"id":"United States holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9cAAAA=","source":"outlook","calendar":"United States holidays","category":"holiday","title":"Thanksgiving Day","startDate":"2026-11-26","endDate":"2026-11-26","startTime":"","endTime":"","allDay":true,"location":"United States","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":15,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9cAAAA%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E0080000000000000000000000000000000000000000310000007643616C2D5569640100000032313138626434302D363866392D343262342D613939392D31366630613731643735353300","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9cAAAA=","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9cAAAA=","subject":"Thanksgiving Day","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9cAAAA%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-26T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-27T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"United States"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E0080000000000000000000000000000000000000000310000007643616C2D5569640100000032313138626434302D363866392D343262342D613939392D31366630613731643735353300","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9cAAAA%3D&exvsurl=1&path=/calendar/item","display_title":"Thanksgiving Day"}},{"id":"United States holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9gAAAA=","source":"outlook","calendar":"United States holidays","category":"holiday","title":"Day After Thanksgiving Day","startDate":"2026-11-27","endDate":"2026-11-27","startTime":"","endTime":"","allDay":true,"location":"United States","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":15,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9gAAAA%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E0080000000000000000000000000000000000000000310000007643616C2D5569640100000037396561383838392D323566302D343762362D396161362D35613631303335653736356200","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9gAAAA=","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy9gAAAA=","subject":"Day After Thanksgiving Day","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9gAAAA%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-11-27T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-11-28T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"United States"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E0080000000000000000000000000000000000000000310000007643616C2D5569640100000037396561383838392D323566302D343762362D396161362D35613631303335653736356200","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy9gAAAA%3D&exvsurl=1&path=/calendar/item","display_title":"Day After Thanksgiving Day"}},{"id":"United States holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9hUNpwwABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3YAAAAQ","source":"outlook","calendar":"United States holidays","category":"holiday","title":"Christmas Eve","startDate":"2026-12-24","endDate":"2026-12-24","startTime":"","endTime":"","allDay":true,"location":"United States","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":15,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"occurrence","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3YAAAA=","originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9hUNpwwABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3YAAAAQ&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00807EA0C1880BE71BE0710C80100000000000000001000000092C9692DC658634BA4B1D899A05CB35D","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9hUNpwwABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3YAAAAQ","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9hUNpwwABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3YAAAAQ","subject":"Christmas Eve","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9hUNpwwABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3YAAAAQ&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-12-24T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-12-25T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"occurrence","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"United States"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3YAAAA=","original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00807EA0C1880BE71BE0710C80100000000000000001000000092C9692DC658634BA4B1D899A05CB35D","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9hUNpwwABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3YAAAAQ&exvsurl=1&path=/calendar/item","display_title":"Christmas Eve"}},{"id":"Canada Holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUBAAAABA=","source":"outlook","calendar":"Canada Holidays","category":"holiday","title":"Christmas Day","startDate":"2026-12-25","endDate":"2026-12-25","startTime":"","endTime":"","allDay":true,"location":"Canada","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":0,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"occurrence","response":"notResponded","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUBAAAAA==","originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUBAAAABA%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00807EA0C1900000000000000000000000000000000310000007643616C2D5569640100000033636432313562332D393566642D343738382D383034372D34373362306532366633633300","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUBAAAABA=","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUBAAAABA=","subject":"Christmas Day","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUBAAAABA%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-12-25T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-12-26T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"occurrence","response_status":{"response":"notResponded"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"Canada"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUBAAAAA==","original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00807EA0C1900000000000000000000000000000000310000007643616C2D5569640100000033636432313562332D393566642D343738382D383034372D34373362306532366633633300","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":0,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUBAAAABA%3D&exvsurl=1&path=/calendar/item","display_title":"Christmas Day"}},{"id":"United States holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3cAAAAQ","source":"outlook","calendar":"United States holidays","category":"holiday","title":"Christmas Day","startDate":"2026-12-25","endDate":"2026-12-25","startTime":"","endTime":"","allDay":true,"location":"United States","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":15,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"occurrence","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3cAAAA=","originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3cAAAAQ&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00807EA0C19F09A66BE0710C80100000000000000001000000076CA3EE707F33541A9FB2F1686589201","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3cAAAAQ","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3cAAAAQ","subject":"Christmas Day","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3cAAAAQ&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-12-25T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-12-26T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"occurrence","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"United States"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3cAAAA=","original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00807EA0C19F09A66BE0710C80100000000000000001000000076CA3EE707F33541A9FB2F1686589201","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9iGgTagABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA%2B5EoS1A9VBNa7oACBqyy3cAAAAQ&exvsurl=1&path=/calendar/item","display_title":"Christmas Day"}},{"id":"Canada Holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9i4y9EQABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTcAAAABA=","source":"outlook","calendar":"Canada Holidays","category":"holiday","title":"Boxing Day","startDate":"2026-12-26","endDate":"2026-12-26","startTime":"","endTime":"","allDay":true,"location":"Canada","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":0,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"occurrence","response":"notResponded","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTcAAAAA==","originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9i4y9EQABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTcAAAABA%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00807EA0C1A00000000000000000000000000000000310000007643616C2D5569640100000061316138396265342D346536632D343633612D383034342D38316462333263303863333700","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9i4y9EQABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTcAAAABA=","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9i4y9EQABGAAACOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTcAAAABA=","subject":"Boxing Day","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9i4y9EQABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTcAAAABA%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-12-26T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-12-27T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"occurrence","response_status":{"response":"notResponded"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"Canada"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTcAAAAA==","original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00807EA0C1A00000000000000000000000000000000310000007643616C2D5569640100000061316138396265342D346536632D343633612D383034342D38316462333263303863333700","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":0,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9i4y9EQABGAAACOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHTcAAAABA%3D&exvsurl=1&path=/calendar/item","display_title":"Boxing Day"}},{"id":"Canada Holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugABitgHqAAAAA==","source":"outlook","calendar":"Canada Holidays","category":"holiday","title":"Boxing Day Bank Holiday","startDate":"2026-12-28","endDate":"2026-12-28","startTime":"","endTime":"","allDay":true,"location":"Canada","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":0,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugABitgHqAAAAA%3D%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E0080000000000000000000000000000000000000000310000007643616C2D5569640100000062313739323261612D643033392D346331322D616237352D37373136336239303830613200","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugABitgHqAAAAA==","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugABitgHqAAAAA==","subject":"Boxing Day Bank Holiday","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugABitgHqAAAAA%3D%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-12-28T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2026-12-29T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"singleInstance","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"Canada"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":null,"original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E0080000000000000000000000000000000000000000310000007643616C2D5569640100000062313739323261612D643033392D346331322D616237352D37373136336239303830613200","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":0,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ%2FEXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugABitgHqAAAAA%3D%3D&exvsurl=1&path=/calendar/item","display_title":"Boxing Day Bank Holiday"}},{"id":"Canada Holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w_U0HALayKrRDA_5EoS1A9VBNa7oAAAIBVgAAALayKrRDA_5EoS1A9VBNa7oAAAEB1EgAAAAQ","source":"outlook","calendar":"Canada Holidays","category":"holiday","title":"New Year's Eve","startDate":"2026-12-31","endDate":"2026-12-31","startTime":"","endTime":"","allDay":true,"location":"Canada","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":0,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"occurrence","response":"notResponded","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUSAAAAA==","originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w%2BU0HALayKrRDA%2B5EoS1A9VBNa7oAAAIBVgAAALayKrRDA%2B5EoS1A9VBNa7oAAAEB1EgAAAAQ&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00807EA0C1F00000000000000000000000000000000310000007643616C2D5569640100000034303938633664652D626437322D343536662D616565642D36666632653637326238316400","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w_U0HALayKrRDA_5EoS1A9VBNa7oAAAIBVgAAALayKrRDA_5EoS1A9VBNa7oAAAEB1EgAAAAQ","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w_U0HALayKrRDA_5EoS1A9VBNa7oAAAIBVgAAALayKrRDA_5EoS1A9VBNa7oAAAEB1EgAAAAQ","subject":"New Year's Eve","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w%2BU0HALayKrRDA%2B5EoS1A9VBNa7oAAAIBVgAAALayKrRDA%2B5EoS1A9VBNa7oAAAEB1EgAAAAQ&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-12-31T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2027-01-01T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"occurrence","response_status":{"response":"notResponded"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"Canada"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAAAgFWAAAAtrIqtEMD7kShLUD1UE1rugAAAQHUSAAAAA==","original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00807EA0C1F00000000000000000000000000000000310000007643616C2D5569640100000034303938633664652D626437322D343536662D616565642D36666632653637326238316400","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":0,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w%2BU0HALayKrRDA%2B5EoS1A9VBNa7oAAAIBVgAAALayKrRDA%2B5EoS1A9VBNa7oAAAEB1EgAAAAQ&exvsurl=1&path=/calendar/item","display_title":"New Year's Eve"}},{"id":"United States holidays|AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w_U0HALayKrRDA_5EoS1A9VBNa7oACBqyfMcAAAC2siq0QwPuRKEtQPVQTWu6AAgasst4AAAAEA==","source":"outlook","calendar":"United States holidays","category":"holiday","title":"New Year's Eve","startDate":"2026-12-31","endDate":"2026-12-31","startTime":"","endTime":"","allDay":true,"location":"United States","description":"\n\n","bodyContentType":"html","reminderOn":false,"reminderMinutes":15,"showAs":"free","importance":"normal","sensitivity":"normal","cancelled":false,"type":"occurrence","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3gAAAA=","originalStart":null,"outlookUrl":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w%2BU0HALayKrRDA%2B5EoS1A9VBNa7oACBqyfMcAAAC2siq0QwPuRKEtQPVQTWu6AAgasst4AAAAEA%3D%3D&exvsurl=1&path=/calendar/item","icalUid":"040000008200E00074C5B7101A82E00807EA0C1FF08264BF0710C801000000000000000010000000E734101DA41A8149948698EB49A6CC5A","sourceEventId":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w_U0HALayKrRDA_5EoS1A9VBNa7oACBqyfMcAAAC2siq0QwPuRKEtQPVQTWu6AAgasst4AAAAEA==","raw":{"id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w_U0HALayKrRDA_5EoS1A9VBNa7oACBqyfMcAAAC2siq0QwPuRKEtQPVQTWu6AAgasst4AAAAEA==","subject":"New Year's Eve","body":{"contentType":"html","content":"\n\n"},"bodyPreview":"","web_link":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w%2BU0HALayKrRDA%2B5EoS1A9VBNa7oACBqyfMcAAAC2siq0QwPuRKEtQPVQTWu6AAgasst4AAAAEA%3D%3D&exvsurl=1&path=/calendar/item","start":{"dateTime":"2026-12-31T00:00:00.0000000","timeZone":"UTC"},"end":{"dateTime":"2027-01-01T00:00:00.0000000","timeZone":"UTC"},"is_all_day":true,"show_as":"free","is_cancelled":false,"type":"occurrence","response_status":{"response":"organizer"},"online_meeting":null,"importance":"normal","sensitivity":"normal","location":{"displayName":"United States"},"attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"recurrence":null,"series_master_id":"AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgBGAAADOEQ-EXl3Lk24cjRinbD5TQcAtrIqtEMD7kShLUD1UE1rugAIGrJ8xwAAALayKrRDA_5EoS1A9VBNa7oACBqyy3gAAAA=","original_start":null,"i_cal_u_id":"040000008200E00074C5B7101A82E00807EA0C1FF08264BF0710C801000000000000000010000000E734101DA41A8149948698EB49A6CC5A","cancelled_occurrences":null,"is_reminder_on":false,"reminder_minutes_before_start":15,"display_url":"https://outlook.live.com/owa/?itemid=AQMkADAwATNiZmYAZC05YzliLWFmMzktMDACLTAwCgFRAAgIAN9m0QNVAAAARgAAAjhEPxF5dy5NuHI0Yp2w%2BU0HALayKrRDA%2B5EoS1A9VBNa7oACBqyfMcAAAC2siq0QwPuRKEtQPVQTWu6AAgasst4AAAAEA%3D%3D&exvsurl=1&path=/calendar/item","display_title":"New Year's Eve"}},{"id":"route-888","source":"route","calendar":"Route plan · v001 + v002","category":"route","title":"888 · Vancouver–Toronto–Ottawa rail-tour model","startDate":"2026-12-04","endDate":"2026-12-10","startTime":"12:00","endTime":"10:58","allDay":false,"location":"Vancouver → Toronto → Ottawa","description":"Monday noon start. Modelled 4,827.1 km at 70 km/h plus 888 five-minute crossing halts: 5 days 22 hours 58 minutes. Schematic crossing-connector estimate, not a surveyed railway timetable. The source schedule uses one elapsed-time clock without timezone conversion.","showAs":"model","reminderOn":false,"sensitivity":"","reminderMinutes":0,"attendees":[],"editedLocally":false},{"id":"route-transfer","source":"route","calendar":"Route plan · v001","category":"route","title":"Ottawa → IAG positioning window","startDate":"2026-12-12","endDate":"2026-12-16","startTime":"10:58","endTime":"03:49","allDay":false,"location":"Ottawa → Niagara Falls International Airport (IAG)","description":"No Ottawa-to-IAG route or duration was supplied. Up to 88 hours 51 minutes is reserved for relocation and a pre-departure buffer. Be at IAG by Saturday, December 19 at 3:49 AM. The reserved time is not a calculated travel estimate.","showAs":"unmodelled window","reminderOn":false,"sensitivity":"","reminderMinutes":0,"attendees":[],"editedLocally":false},{"id":"route-03","source":"route","calendar":"Route plan · v001 + v002","category":"route","title":"03 · IAG → LLHB → PUS","startDate":"2026-12-17","endDate":"2026-12-18","startTime":"03:49","endTime":"00:26","allDay":false,"location":"IAG → LLHB → PUS","description":"The file gives a 20 hours 37 minutes estimate over 17,760 km. Its two displayed leg estimates add to 20 hours 38 minutes, a one-minute rounding difference. No additional LLHB turnaround is specified. This is a route-file estimate, not a confirmed flight schedule.","showAs":"model","reminderOn":false,"sensitivity":"","reminderMinutes":0,"attendees":[],"editedLocally":false},{"id":"route-51","source":"route","calendar":"Route plan · v002","category":"route","title":"51 · PUS → PNW","startDate":"2026-12-19","endDate":"2026-12-23","startTime":"00:26","endTime":"15:21","allDay":false,"location":"PUS → PNW","description":"The newer v002 calendar starts this stage on the calendar day after route 03 finishes. Recomputed from 51 airport points: 73,687 km of rounded great-circle legs at 905 km/h plus 29 hours 30 minutes of defined ground time, for 110 hours 55 minutes total. This is a route-file model, not an airline timetable or confirmation of airport, airspace, landing, or operating permissions.","showAs":"model","reminderOn":false,"sensitivity":"","reminderMinutes":0,"attendees":[],"editedLocally":false},{"id":"route-02","source":"route","calendar":"Route plan · v002","category":"route","title":"02 · PNW → 7246 Parkside Road","startDate":"2026-12-24","endDate":"2026-12-24","startTime":"15:21","endTime":"23:59","allDay":false,"location":"PNW → 7246 Parkside Road, Niagara Falls, Ontario","description":"402 miles (about 647 km) at a constant 75 km/h gives an 8 hours 38 minutes moving-time estimate. v002 places departure at 3:21 PM and arrival by 11:59 PM on December 26. Traffic, border queues, breaks, and road changes are excluded. The stated speed is a calculation rate, not a uniform legal speed limit. The route file's internal destination is 7246 Parkside Road; its filename says 7240NF.","showAs":"model","reminderOn":false,"sensitivity":"","reminderMinutes":0,"attendees":[],"editedLocally":false},{"id":"Calendar|manual-20261031-pattie-8-11","source":"manual","calendar":"Calendar","category":"schedule","title":"Pattie II-9-11","startDate":"2026-10-31","endDate":"2026-10-31","startTime":"21:00","endTime":"23:00","allDay":false,"location":"","description":"Existing October 31 schedule restored as requested: 8:00 PM–11:00 PM.","bodyContentType":"text","reminderOn":false,"reminderMinutes":15,"showAs":"busy","importance":"normal","sensitivity":"private","cancelled":false,"type":"singleInstance","response":"organizer","attendees":[],"organizer":{"emailAddress":{"address":"shailesh_gupta@live.com","name":"Shailesh Gupta"}},"onlineMeeting":null,"recurrence":null,"seriesMasterId":null,"originalStart":null,"outlookUrl":"","icalUid":"","sourceEventId":"","editedLocally":true}]</script>
+<script>
+"use strict";
+const SEED=JSON.parse(document.getElementById("calendar-seed").textContent);
+const STORAGE_KEY="editable-outlook-route-calendar-nov-dec-2026-v6";
+const names=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const weekdays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const shortDays=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+let events=loadEvents();
+let activeYear=2026,activeMonth=10,selectedDate="2026-11-01",openedEventId=null;
+const $=id=>document.getElementById(id);
+function loadEvents(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw!==null){const parsed=JSON.parse(raw);if(Array.isArray(parsed))return parsed}}catch(err){}return SEED.slice()}
+function saveEvents(message){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(events));$("saveStatus").textContent=message||"Saved in this browser just now."}catch(err){$("saveStatus").textContent="Browser storage is unavailable; export a backup to keep edits."}}
+function dateKey(y,m,d){return String(y).padStart(4,"0")+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0")}
+function isoWeekNumber(monday){const d=new Date(monday.getTime());const weekday=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-weekday);const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));return Math.ceil((((d-yearStart)/86400000)+1)/7)}
+function parseDate(s){const p=s.split("-").map(Number);return new Date(Date.UTC(p[0],p[1]-1,p[2],12))}
+function formatDate(s,opts){if(!s)return"Not set";return new Intl.DateTimeFormat("en-CA",Object.assign({timeZone:"UTC",year:"numeric",month:"short",day:"numeric"},opts||{})).format(parseDate(s))}
+function formatLongDate(s){if(!s)return"Not set";return new Intl.DateTimeFormat("en-CA",{timeZone:"UTC",weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(parseDate(s))}
+function formatTime(t){if(!t)return"";const parts=t.split(":").map(Number);return new Intl.DateTimeFormat("en-CA",{hour:"numeric",minute:"2-digit",hour12:true,timeZone:"UTC"}).format(new Date(Date.UTC(2020,0,1,parts[0],parts[1])))}
+function plainText(value){if(!value)return"";try{return new DOMParser().parseFromString(String(value),"text/html").body.textContent.trim()}catch(err){return String(value).replace(/<[^>]*>/g," ").trim()}}
+function overlapsDay(e,key){if(e.allDay){return key>=e.startDate&&key<=e.endDate}return key>=e.startDate&&key<=e.endDate}
+function timeFor(e){if(e.allDay)return"All day";if(!e.startTime&&!e.endTime)return"Time not set";if(e.startTime&&e.endTime)return formatTime(e.startTime)+" – "+formatTime(e.endTime);return(e.startTime?formatTime(e.startTime):"")+" "+(e.endTime?"to "+formatTime(e.endTime):"")}
+function eventDateLabel(e){if(e.startDate===e.endDate)return formatLongDate(e.startDate);return formatDate(e.startDate,{month:"short",day:"numeric"})+" – "+formatDate(e.endDate,{month:"short",day:"numeric",year:"numeric"})}
+function sortedEvents(list){return list.slice().sort((a,b)=>(a.startDate+(a.startTime||"")).localeCompare(b.startDate+(b.startTime||""))||a.title.localeCompare(b.title))}
+function filteredEvents(){const query=$("searchBox").value.trim().toLocaleLowerCase();const cat=$("categoryFilter").value;return sortedEvents(events.filter(e=>{if(cat!=="all"&&e.category!==cat)return false;if(!query)return true;const text=[e.title,e.location,e.description,e.calendar,e.category,e.showAs,e.attendees].join(" ").toLocaleLowerCase();return text.includes(query)}))}
+function monthItems(list,y,m){const first=dateKey(y,m,1),last=dateKey(y,m,new Date(Date.UTC(y,m+1,0)).getUTCDate());return list.filter(e=>e.startDate<=last&&e.endDate>=first)}
+function makeButton(text,className,handler,title){const b=document.createElement("button");b.type="button";b.textContent=text;if(className)b.className=className;if(title)b.title=title;b.addEventListener("click",handler);return b}
+function renderCalendar(){
+ const grid=$("calendarGrid");grid.replaceChildren();
+ const weekHeader=document.createElement("div");weekHeader.className="dow week-column";weekHeader.setAttribute("role","columnheader");weekHeader.textContent="Wk";grid.append(weekHeader);
+ for(const name of shortDays){const d=document.createElement("div");d.className="dow";d.setAttribute("role","columnheader");d.textContent=name;grid.append(d)}
+ const firstDay=new Date(Date.UTC(activeYear,activeMonth,1));
+ const first=(firstDay.getUTCDay()+6)%7;
+ const count=new Date(Date.UTC(activeYear,activeMonth+1,0)).getUTCDate();
+ const visible=filteredEvents();
+ const rowCount=Math.ceil((first+count)/7);
+ for(let row=0;row<rowCount;row++){
+  const mondayDate=new Date(Date.UTC(activeYear,activeMonth,1-first+row*7));
+  const weekCell=document.createElement("div");weekCell.className="week-number";weekCell.setAttribute("aria-label","ISO week "+isoWeekNumber(mondayDate));weekCell.title="ISO week "+isoWeekNumber(mondayDate);weekCell.textContent=String(isoWeekNumber(mondayDate)).padStart(2,"0");grid.append(weekCell);
+  for(let column=0;column<7;column++){
+   const cellDate=new Date(Date.UTC(mondayDate.getUTCFullYear(),mondayDate.getUTCMonth(),mondayDate.getUTCDate()+column,12));
+   const day=cellDate.getUTCDate();
+   const key=dateKey(cellDate.getUTCFullYear(),cellDate.getUTCMonth(),day);
+   const otherMonth=cellDate.getUTCMonth()!==activeMonth;
+   const cell=document.createElement("div");cell.className="day"+(otherMonth?" other-month":"")+(key===selectedDate?" selected":"");cell.setAttribute("role","gridcell");cell.setAttribute("aria-label",formatLongDate(key));
+   const top=document.createElement("div");top.className="day-top";
+   top.append(makeButton(String(day),"day-number",()=>{selectedDate=key;renderAll()},formatLongDate(key)));
+   top.append(makeButton("＋","add-mini",()=>openNewEvent(key),"Add an event on "+key));
+   cell.append(top);
+   const dayEvents=visible.filter(e=>overlapsDay(e,key));
+   dayEvents.slice(0,4).forEach(e=>{const chip=makeButton((e.startTime?formatTime(e.startTime)+" · ":"")+e.title,"event-chip "+e.category,()=>showDetails(e.id),e.title+" · "+timeFor(e));if(e.id===openedEventId)chip.classList.add("selected-chip");cell.append(chip)});
+   if(dayEvents.length>4){const more=document.createElement("div");more.className="day-count";more.textContent="+"+(dayEvents.length-4)+" more";cell.append(more)}
+   grid.append(cell);
+  }
+ }
+ const title=names[activeMonth]+" "+activeYear;
+ $("monthHeading").textContent=title;$("monthTitle").textContent=title;
+ $("monthCount").textContent=monthItems(filteredEvents(),activeYear,activeMonth).length+" events in this month";
+}
+function eventSummary(e){
+ const box=document.createElement("article");box.className="day-event";
+ const title=document.createElement("div");title.className="day-event-title";title.textContent=e.title;title.tabIndex=0;title.addEventListener("click",()=>showDetails(e.id));title.addEventListener("keydown",ev=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();showDetails(e.id)}});
+ const meta=document.createElement("div");meta.className="day-event-meta";meta.textContent=(e.allDay?"All day":timeFor(e))+" · "+(e.calendar||"Local event");
+ box.append(title,meta);
+ const actions=document.createElement("div");actions.className="small-actions";actions.append(makeButton("Details","",()=>showDetails(e.id)),makeButton("Edit","",()=>openEditEvent(e.id)));box.append(actions);
+ return box
+}
+function renderDay(){
+ const matches=filteredEvents().filter(e=>overlapsDay(e,selectedDate));
+ $("selectedHeading").textContent=formatLongDate(selectedDate);
+ $("selectedCount").textContent=matches.length+" event"+(matches.length===1?"":"s");
+ $("dayEvents").replaceChildren();
+ if(!matches.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No matching event on this date. Add a schedule or use the search and filters."; $("dayEvents").append(empty)}
+ else matches.forEach(e=>$("dayEvents").append(eventSummary(e)));
+}
+function renderSearch(){
+ const query=$("searchBox").value.trim();
+ const sec=$("searchSection");sec.classList.toggle("hidden",!query);
+ if(!query)return;
+ const items=filteredEvents().filter(e=>{const q=query.toLocaleLowerCase();return [e.title,e.location,e.description,e.calendar,e.category,e.showAs,e.attendees].join(" ").toLocaleLowerCase().includes(q)});
+ $("resultCount").textContent=items.length+" match"+(items.length===1?"":"es")+" across all dates";
+ const host=$("searchResults");host.replaceChildren();
+ if(!items.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No matching events.";host.append(empty);return}
+ items.forEach(e=>{const card=document.createElement("article");card.className="result-card";const name=document.createElement("strong");name.textContent=e.title;name.addEventListener("click",()=>{navigateToEvent(e)});const meta=document.createElement("small");meta.textContent=eventDateLabel(e)+" · "+timeFor(e)+" · "+(e.calendar||"Local event");card.append(name,meta);card.append(makeButton("Open details","",()=>showDetails(e.id)));host.append(card)});
+}
+function navigateToEvent(e){const parts=e.startDate.split("-").map(Number);activeYear=parts[0];activeMonth=parts[1]-1;selectedDate=e.startDate;renderAll();showDetails(e.id)}
+function renderRoutes(){
+ const host=$("routeList");host.replaceChildren();
+ sortedEvents(events.filter(e=>e.source==="route")).forEach(e=>{
+  const card=document.createElement("article");card.className="card route-item";
+  const title=document.createElement("h3");title.textContent=e.title;
+  const meta=document.createElement("div");meta.className="meta";meta.textContent=eventDateLabel(e)+" · "+timeFor(e)+" · Source schedule clock";
+  const desc=document.createElement("p");desc.textContent=plainText(e.description);
+  card.append(title,meta,desc,makeButton("Edit route event","",()=>openEditEvent(e.id)));host.append(card)
+ });
+}
+function renderAll(){renderCalendar();renderDay();renderSearch();renderRoutes()}
+function setField(host,label,value,wide){
+ const wrap=document.createElement("div");wrap.className="detail-field"+(wide?" wide":"");
+ const small=document.createElement("small");small.textContent=label;
+ const valueEl=document.createElement("div");
+ if(value instanceof Node)valueEl.append(value);else valueEl.textContent=value||"Not provided";
+ wrap.append(small,valueEl);host.append(wrap)
+}
+function attendeeNames(e){return(e.attendees||[]).map(a=>typeof a==="string"?a:((a.emailAddress?.name||"")+(a.emailAddress?.address?" <"+a.emailAddress.address+">":""))).filter(Boolean).join("\n")}
+function showDetails(id){
+ const e=events.find(x=>x.id===id);if(!e)return;openedEventId=id;
+ $("detailTitle").textContent=e.title;
+ $("detailWhen").textContent=eventDateLabel(e)+" · "+timeFor(e)+(e.source==="outlook"&&!e.allDay?" · Outlook Eastern time":e.source==="route"?" · Source schedule clock":"");
+ const notice=$("detailConflict");notice.classList.add("hidden");notice.textContent="";
+ if(e.title.includes("CPF")&&e.description.includes("October 27")){notice.classList.remove("hidden");notice.textContent="Date check: Outlook places this entry on November 6, 2026, 12:00–1:00 PM Eastern. Its body says Tuesday, October 27, 2026 at 9:45 AM. The two details conflict; confirm the current appointment time."}
+ const host=$("detailFields");host.replaceChildren();
+ setField(host,"Type",e.category);
+ setField(host,"Calendar / source",e.calendar||"Local event");
+ setField(host,"Location",e.location);
+ setField(host,"Availability / status",e.showAs);
+ setField(host,"Reminder",e.reminderOn?(String(e.reminderMinutes||0)+" minutes before start"):"Off");
+ setField(host,"Privacy",e.sensitivity||"Not specified");
+ setField(host,"Importance",e.importance||"Not specified");
+ setField(host,"Response",e.response||"Not specified");
+ setField(host,"Invitees / attendees",attendeeNames(e),true);
+ setField(host,"Notes and full event details",plainText(e.description),true);
+ if(e.seriesMasterId)setField(host,"Recurring series master ID",e.seriesMasterId,true);
+ if(e.type)setField(host,"Outlook event type",e.type);
+ if(e.organizer){const org=e.organizer.emailAddress||{};setField(host,"Organizer",(org.name||"")+(org.address?" · "+org.address:""))}
+ if(e.outlookUrl){const link=document.createElement("a");link.href=e.outlookUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open original Outlook event";setField(host,"Outlook link",link,true)}
+ if(e.editedLocally)setField(host,"Local edit","This Outlook copy has been edited here and is not synced to Outlook",true);
+ openedEventId=id;$("detailsDialog").showModal();renderCalendar()
+}
+function openNewEvent(date){
+ $("eventForm").reset();$("formHeading").textContent="Add event";$("eventId").value="";
+ $("eventTitle").value="";$("eventCategory").value="schedule";$("eventCalendar").value="My calendar";
+ $("startDate").value=date||selectedDate;$("endDate").value=date||selectedDate;$("startTime").value="";$("endTime").value="";
+ $("eventLocation").value="";$("eventDescription").value="";$("eventShowAs").value="";$("eventPrivacy").value="";
+ $("reminderOn").checked=false;$("reminderMinutes").value="15";$("attendees").value="";
+ $("allDay").checked=false;toggleTimed();$("editDialog").showModal()
+}
+function openEditEvent(id){
+ const e=events.find(x=>x.id===id);if(!e)return;
+ $("eventForm").reset();$("formHeading").textContent="Edit event";$("eventId").value=e.id;
+ $("eventTitle").value=e.title||"";$("eventCategory").value=e.category||"schedule";$("eventCalendar").value=e.calendar||"My calendar";
+ $("startDate").value=e.startDate||selectedDate;$("endDate").value=e.endDate||e.startDate||selectedDate;
+ $("startTime").value=e.startTime||"";$("endTime").value=e.endTime||"";
+ $("eventLocation").value=e.location||"";$("eventDescription").value=plainText(e.description);
+ $("eventShowAs").value=e.showAs||"";$("eventPrivacy").value=e.sensitivity||"";
+ $("reminderOn").checked=!!e.reminderOn;$("reminderMinutes").value=String(e.reminderMinutes||0);
+ $("attendees").value=attendeeNames(e);$("allDay").checked=!!e.allDay;toggleTimed();
+ $("detailsDialog").close();$("editDialog").showModal()
+}
+function toggleTimed(){document.querySelectorAll(".timed-field").forEach(x=>x.classList.toggle("hidden",$("allDay").checked))}
+function makeId(){return"local-"+Date.now()+"-"+Math.floor(Math.random()*1000000)}
+$("eventForm").addEventListener("submit",ev=>{
+ ev.preventDefault();
+ const id=$("eventId").value||makeId();
+ const startDate=$("startDate").value,endDate=$("endDate").value;
+ if(!startDate||!endDate||endDate<startDate){$("saveStatus").textContent="End date must be on or after start date.";return}
+ const old=events.find(x=>x.id===id);
+ const attendeeText=$("attendees").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ const item=Object.assign({},old||{},{
+  id,source:old?.source||"local",category:$("eventCategory").value,calendar:$("eventCalendar").value.trim()||"My calendar",
+  title:$("eventTitle").value.trim(),startDate,endDate,allDay:$("allDay").checked,
+  startTime:$("allDay").checked?"":$("startTime").value,endTime:$("allDay").checked?"":$("endTime").value,
+  location:$("eventLocation").value.trim(),description:$("eventDescription").value,
+  showAs:$("eventShowAs").value||"",sensitivity:$("eventPrivacy").value||"",
+  reminderOn:$("reminderOn").checked,reminderMinutes:Number($("reminderMinutes").value||0),
+  attendees:attendeeText,editedLocally:old?.source==="outlook"||!!old?.editedLocally
+ });
+ if(old){events=events.map(x=>x.id===id?item:x)}else events.push(item);
+ selectedDate=startDate;const parts=startDate.split("-").map(Number);activeYear=parts[0];activeMonth=parts[1]-1;
+ $("editDialog").close();saveEvents("Saved locally just now.");renderAll()
+});
+$("allDay").addEventListener("change",toggleTimed);
+function showDialog(dialog){const d=$(dialog);if(d.open)d.close()}
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>showDialog(b.getAttribute("data-close"))));
+$("previousMonth").addEventListener("click",()=>moveMonth(-1));
+$("nextMonth").addEventListener("click",()=>moveMonth(1));
+$("returnNovember").addEventListener("click",()=>{activeYear=2026;activeMonth=10;selectedDate="2026-11-01";renderAll()});
+function moveMonth(offset){const d=new Date(Date.UTC(activeYear,activeMonth+offset,1));activeYear=d.getUTCFullYear();activeMonth=d.getUTCMonth();selectedDate=dateKey(activeYear,activeMonth,1);renderAll()}
+$("addEvent").addEventListener("click",()=>openNewEvent(selectedDate));
+$("addSelectedDate").addEventListener("click",()=>openNewEvent(selectedDate));
+$("searchBox").addEventListener("input",()=>{renderCalendar();renderDay();renderSearch()});
+$("categoryFilter").addEventListener("change",()=>{renderCalendar();renderDay();renderSearch()});
+$("editEvent").addEventListener("click",()=>{if(openedEventId)openEditEvent(openedEventId)});
+$("deleteEvent").addEventListener("click",()=>{
+ const e=events.find(x=>x.id===openedEventId);if(!e)return;
+ if(!window.confirm("Delete “"+e.title+"” from this local calendar? This will not remove it from Outlook."))return;
+ events=events.filter(x=>x.id!==e.id);$("detailsDialog").close();openedEventId=null;saveEvents("Deleted locally and saved.");renderAll()
+});
+$("printCalendar").addEventListener("click",()=>window.print());
+function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$("exportJson").addEventListener("click",()=>download("calendar-nov-dec-2026-backup.json",JSON.stringify({title:"November–December 2026 Calendar",exportedAt:new Date().toISOString(),events},null,2),"application/json;charset=utf-8"));
+$("exportHtml").addEventListener("click",()=>{
+ const copy=document.documentElement.cloneNode(true);
+ const seedTag=copy.querySelector("#calendar-seed");
+ seedTag.textContent=JSON.stringify(events).replace(/</g,"\\u003c");
+ const source="<!doctype html>\n"+copy.outerHTML;
+ download("calendar-nov-dec-2026-updated.html",source,"text/html;charset=utf-8")
+});
+$("importJson").addEventListener("click",()=>$("filePicker").click());
+$("filePicker").addEventListener("change",ev=>{
+ const file=ev.target.files?.[0];if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{try{const parsed=JSON.parse(String(reader.result));const list=Array.isArray(parsed)?parsed:parsed.events;if(!Array.isArray(list)||!list.every(x=>x&&typeof x.title==="string"&&typeof x.startDate==="string"&&typeof x.endDate==="string"))throw new Error("Invalid event data");if(!window.confirm("Replace the events in this browser with "+list.length+" imported events?"))return;events=list;saveEvents("Imported backup and saved locally.");renderAll()}catch(err){$("saveStatus").textContent="That file is not a calendar backup in the expected format."}finally{ev.target.value=""}};
+ reader.readAsText(file)
+});
+renderAll();
+</script>
+
+
+</body></html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pennsylvania Ave NW — 12th St NW to Peace Circle Patch Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--navy:#0f2c59;--crimson:#900c3f;--pale:#f8f9fa;--border:#cbd5e1;--dark:#1e293b;--blue:#0284c7}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--dark);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:14px}
+#app{display:grid;grid-template-columns:380px minmax(0,1fr);height:100vh;min-height:650px}
+#panel{background:#fff;border-right:2px solid var(--border);padding:14px;overflow:auto}
+h1{font-size:18px;margin:0 0 6px;color:var(--navy)}
+h2{font-size:14px;margin:14px 0 8px;color:var(--crimson)}
+.highlight-box{font-size:12px;line-height:1.45;color:var(--dark);background:#e0f2fe;border:2px solid var(--blue);padding:10px;border-radius:8px;margin-bottom:12px}
+.dim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.dim-card{border:1px solid var(--border);border-radius:8px;padding:8px;background:var(--pale);text-align:center}
+.dim-card b{display:block;font-size:16px;color:var(--navy)}
+.dim-card span{font-size:11px;color:#475569;display:block;margin-top:2px}
+.controls{display:grid;gap:8px;margin:10px 0}
+input,button{width:100%;min-height:38px;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px}
+button{cursor:pointer;font-weight:700;background:var(--navy);color:#fff;border:none;transition:background 0.2s}
+button:hover{background:#1a3d7c}
+#list{display:grid;gap:8px}
+.item{border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;background:#fff;transition:all 0.2s}
+.item:hover{background:var(--pale);border-color:var(--blue)}
+.badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:800;color:#fff;background:var(--crimson);margin-right:6px}
+.badge-blue{background:var(--blue)}
+.small{font-size:11px;color:#64748b;margin-top:3px}
+#map{height:100%;min-width:0}
+.marker-icon{background:var(--crimson);border:2px solid #fff;border-radius:50%;width:30px;height:30px;color:#fff;font-weight:800;text-align:center;line-height:26px;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+.term-icon{background:var(--blue);border:2px solid #fff;border-radius:50%;width:32px;height:32px;color:#fff;font-weight:800;text-align:center;line-height:28px;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+.leaflet-popup-content{color:var(--dark);font-family:sans-serif}
+@media(max-width:850px){
+  #app{grid-template-columns:1fr;height:auto}
+  #panel{border-right:0;border-bottom:2px solid var(--border);max-height:50vh}
+  #map{height:60vh;min-height:480px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<aside id="panel">
+<h1>Updated Shorter Road Patch</h1>
+<div class="highlight-box">
+  <strong>VERIFIED SHORTER SEGMENT:</strong><br>
+  Pennsylvania Avenue NW from <strong>12th St NW (Federal Triangle)</strong> to <strong>Peace Circle (1st St NW)</strong>.
+</div>
+
+<h2>Metric Dimensions Summary</h2>
+<div class="dim-grid">
+  <div class="dim-card"><b>1,380 m</b><span>Total Length (1.38 km / 4,530 ft)</span></div>
+  <div class="dim-card"><b>48.8 m</b><span>Right-of-Way Width (160 ft)</span></div>
+  <div class="dim-card"><b>32.9–36.6 m</b><span>Carriageway (108–120 ft)</span></div>
+  <div class="dim-card"><b>6.1–7.6 m</b><span>Sidewalks Each Side (20–25 ft)</span></div>
+</div>
+
+<div class="controls">
+  <input id="search" placeholder="Search waypoint / landmark…">
+  <button id="fit">Fit Shorter Road Segment</button>
+</div>
+
+<h2>Waypoints & Camera Angles</h2>
+<div id="list"></div>
+</aside>
+<main id="map"></main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const PATCH_POINTS = [
+  { id: 'W2', name: 'West Start: 12th St NW / Federal Triangle Gate', type: 'term', lat: 38.8955, lng: -77.0282, dir: '12th St NW Intersection', desc: 'West terminal of shorter patch adjacent to EPA, Old Post Office Tower, and Federal Triangle Metro.' },
+  { id: 'W3', name: '10th St NW / FBI Building Corner', type: 'mid', lat: 38.8946, lng: -77.0256, dir: 'Mid-Corridor Vista', desc: 'Framed by FBI Building (North) and Dept. of Justice RFK Building (South).' },
+  { id: 'W4', name: '7th St NW / Navy Memorial Plaza', type: 'mid', lat: 38.8936, lng: -77.0219, dir: 'Plaza Intersection', desc: 'National Archives on South, U.S. Navy Memorial Plaza on North.' },
+  { id: 'W5', name: '4th St NW / National Gallery Gateway', type: 'mid', lat: 38.8920, lng: -77.0168, dir: 'Eastbound Vista', desc: 'Opens up toward National Gallery of Art East Building and John Marshall Park.' },
+  { id: 'W6', name: 'East Boundary: Peace Circle (1st St NW)', type: 'term', lat: 38.8906, lng: -77.0123, dir: 'U.S. Capitol Grounds Terminal', desc: 'East terminal circle at Peace Monument facing the U.S. Capitol Building.' }
+];
+
+const PATCH_LINE = [
+  [38.8955, -77.0282], [38.8946, -77.0256], [38.8936, -77.0219],
+  [38.8920, -77.0168], [38.8906, -77.0123]
+];
+
+const map = L.map('map').setView([38.8935, -77.0200], 15);
+
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom: 19, attribution: '© Esri, USGS, OpenStreetMap'
+}).addTo(map);
+
+const markedPolyline = L.polyline(PATCH_LINE, { color: '#0284c7', weight: 8, opacity: 0.9, lineCap: 'round' }).addTo(map);
+
+const bounds = L.latLngBounds([38.8895, -77.0300], [38.8970, -77.0100]);
+L.rectangle(bounds, { color: '#0284c7', weight: 2, fillColor: '#0284c7', fillOpacity: 0.08, dashArray: '6, 6' }).addTo(map);
+
+const markers = [];
+
+PATCH_POINTS.forEach(pt => {
+  const isTerm = pt.type === 'term';
+  const icon = L.divIcon({
+    className: '',
+    html: `<div class="${isTerm ? 'term-icon' : 'marker-icon'}">${pt.id}</div>`,
+    iconSize: [30, 30], iconAnchor: [15, 15]
+  });
+
+  const m = L.marker([pt.lat, pt.lng], { icon }).addTo(map);
+  m.bindPopup(`<b>${pt.name}</b><br>Location: ${pt.dir}<br>${pt.desc}`);
+  m._data = pt; markers.push(m);
+});
+
+function renderList() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const listEl = document.getElementById('list'); listEl.innerHTML = '';
+  PATCH_POINTS.filter(p => `${p.name} ${p.dir}`.toLowerCase().includes(q)).forEach(p => {
+    const isTerm = p.type === 'term';
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `<div><span class="badge ${isTerm ? 'badge-blue' : ''}">${p.id}</span> <strong>${p.name}</strong></div><div class="small">${p.dir}</div>`;
+    div.onclick = () => { map.setView([p.lat, p.lng], 16); markers.find(mm => mm._data === p)?.openPopup(); };
+    listEl.appendChild(div);
+  });
+}
+
+document.getElementById('search').addEventListener('input', renderList);
+document.getElementById('fit').addEventListener('click', () => map.fitBounds(markedPolyline.getBounds(), { padding: [50, 50] }));
+renderList();
+map.fitBounds(markedPolyline.getBounds(), { padding: [50, 50] });
+</script>
+</body>
+</html>
